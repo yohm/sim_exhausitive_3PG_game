@@ -14,6 +14,18 @@ class DirectedGraph
     @links[from].push(to)
   end
 
+  def sccs
+    f = ComponentFinder.new(self)
+    f.strongly_connected_components
+  end
+
+  def transient_nodes
+    isolated_nodes = sccs.select {|scc| scc.size == 1 }.flatten
+    has_selfloop = isolated_nodes.select do |n|
+      @links[n].include?(n)
+    end
+    isolated_nodes - has_selfloop
+  end
 end
 
 class ComponentFinder
@@ -77,7 +89,9 @@ if __FILE__ == $0
   g1.add_link(2, 1)
   g1.add_link(0, 3)
   g1.add_link(3, 4)
+  g1.add_link(4, 4)
   pp g1
-  sccs = ComponentFinder.new( g1 ).strongly_connected_components
-  pp sccs
+  pp g1.sccs  #=> [ [0,1,2], [3], [4] ]
+  pp g1.transient_nodes  # [3]
 end
+
