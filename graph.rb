@@ -26,6 +26,10 @@ class DirectedGraph
     end
     isolated_nodes - has_selfloop
   end
+
+  def non_transient_nodes
+    (0..(@n-1)).to_a - transient_nodes
+  end
 end
 
 class ComponentFinder
@@ -93,5 +97,6 @@ if __FILE__ == $0
   pp g1
   pp g1.sccs  #=> [ [0,1,2], [3], [4] ]
   pp g1.transient_nodes  # [3]
+  pp g1.non_transient_nodes  # [0,1,2,4]
 end
 
