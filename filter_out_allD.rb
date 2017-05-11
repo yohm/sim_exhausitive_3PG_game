@@ -1,4 +1,5 @@
 require 'pp'
+require_relative 'graph'
 
 A_STATES = [
     [:c,:c],
@@ -7,6 +8,7 @@ A_STATES = [
     [:d,:d]
 ]
 
+# Since either B or C is allD, the states cannot be [*,0] or [0,*], or [1,1].
 BC_STATES = [
     #[0,0],
     #[0,1],
@@ -41,17 +43,71 @@ FIXED_STRATEGY = {
 }
 
 UNFIXED_STATES = STATES - FIXED_STRATEGY.keys
-pp "UNFIXED_STATES: ", UNFIXED_STATES
+# pp "UNFIXED_STATES: ", UNFIXED_STATES
 
 strategy_candidate = []
 [:c,:d].product( [:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d] ) do |actions|
-  pp actions
   s = FIXED_STRATEGY.merge( Hash[ UNFIXED_STATES.zip(actions) ] )
   strategy_candidate << s
 end
 
-pp strategy_candidate
+#pp strategy_candidate
 pp strategy_candidate.size
+
+def possible_next_states( strategy, stat )
+  next_stat = [nil, nil, nil, nil]
+  next_stat[0] = stat[1]
+  next_stat[2] = (stat[3]!=-1) ? stat[3] : 1
+
+  next_stat[1] = strategy[stat]
+
+  if next_stat[2] == 1
+    possible_states = [-1,2].map do |act_bc|
+      next_stat[3] = act_bc
+      next_stat.dup
+    end
+  else
+    possible_states = [1,2].map do |act_bc|
+      next_stat[3] = act_bc
+      next_stat.dup
+    end
+  end
+  possible_states
+end
+
+def construct_transition_graph(strategy)
+  g = DirectedGraph.new( STATES.size )
+  #pp strategy
+  STATES.each_with_index do |stat,idx|
+    next_states = possible_next_states( strategy, stat )
+    #pp "stat", stat, "next_stat", next_states
+    next_indexes = next_states.map {|next_stat| STATES.index(next_stat) }
+    #pp next_indexes
+    next_indexes.each do |n|
+      g.add_link(idx, n)
+    end
+  end
+  g
+end
+
+defensible_count = 0
+defensible_strategies = []
+strategy_candidate.each do |str|
+  g = construct_transition_graph(str)
+  #pp g
+  risky_state = g.non_transient_nodes.find do |n|
+    s = STATES[n]
+    !(s[0] == :d and s[1] == :d)
+  end
+  #pp "risky_state : #{risky_state}"
+  is_defensible = risky_state.nil?
+  #$stderr.puts "strategy #{str} is #{is_defensible ? 'defensible':'non-defensible'}"
+  defensible_strategies << str if is_defensible
+  #break #TODO : remove later
+end
+
+pp "# defensible : #{defensible_strategies.count}"
+pp defensible_strategies
 
 =begin
 class Strategy
