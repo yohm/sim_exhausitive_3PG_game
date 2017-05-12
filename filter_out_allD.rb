@@ -106,30 +106,14 @@ strategy_candidate.each do |str|
   #break #TODO : remove later
 end
 
+def strategy_to_bits( strategy )
+  actions = STATES.map do |s|
+    strategy[s]
+  end
+  actions.join('')
+end
+
 pp "# defensible : #{defensible_strategies.count}"
 pp defensible_strategies
+pp defensible_strategies.map {|str| strategy_to_bits(str) }
 
-=begin
-class Strategy
-
-  def initialize(actions)
-    @actions = actions
-    @graph = transition_graph
-  end
-
-  def transition_graph
-    # IMPLEMENT ME
-  end
-
-  def defensible_against_alld?
-    @graph.find_all_loops.all? do |loop|
-      contain_dd_only?(loop)
-    end
-  end
-end
-
-found = possible_strategies.find_all do |s|
-  s.defensible_against_alld?
-end
-pp found
-=end
