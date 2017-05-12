@@ -46,14 +46,17 @@ FIXED_STRATEGY = {
 UNFIXED_STATES = STATES - FIXED_STRATEGY.keys
 # pp "UNFIXED_STATES: ", UNFIXED_STATES
 
-strategy_candidate = []
-[:c,:d].product( [:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d],[:c,:d] ) do |actions|
-  s = FIXED_STRATEGY.merge( Hash[ UNFIXED_STATES.zip(actions) ] )
-  strategy_candidate << s
+strategy_candidates = [FIXED_STRATEGY]
+UNFIXED_STATES.each do |state|
+  copy1 = Marshal.load( Marshal.dump( strategy_candidates ) )
+  copy1.each {|strategy| strategy[state] = :c }
+  copy2 = Marshal.load( Marshal.dump( strategy_candidates ) )
+  copy2.each {|strategy| strategy[state] = :d }
+  strategy_candidates = copy1 + copy2
 end
 
-#pp strategy_candidate
-pp strategy_candidate.size
+pp strategy_candidates
+pp strategy_candidates.size
 
 def possible_next_states( strategy, stat )
   next_stat = [nil, nil, nil, nil]
@@ -93,7 +96,7 @@ end
 
 defensible_count = 0
 defensible_strategies = []
-strategy_candidate.each do |str|
+strategy_candidates.each do |str|
   g = construct_transition_graph(str)
   #pp g
   risky_state = g.non_transient_nodes.find do |n|
