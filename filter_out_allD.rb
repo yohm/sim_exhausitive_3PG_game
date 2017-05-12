@@ -55,7 +55,7 @@ UNFIXED_STATES.each do |state|
   strategy_candidates = copy1 + copy2
 end
 
-pp strategy_candidates
+#pp strategy_candidates
 pp strategy_candidates.size
 
 def possible_next_states( strategy, stat )
@@ -111,13 +111,17 @@ strategy_candidates.each do |str|
 end
 
 def strategy_to_bits( strategy )
-  actions = STATES.map do |s|
-    strategy[s]
-  end
-  actions.join('')
+  acts
 end
 
 pp "# defensible : #{defensible_strategies.count}"
 #pp defensible_strategies
-pp defensible_strategies.map {|str| strategy_to_bits(str) }
+
+pp "possible actions for states: ", UNFIXED_STATES
+pp "must be one of the following"
+pp defensible_strategies.map {|str|
+    UNFIXED_STATES.map do |s|
+      str[s]
+    end
+  }
 
