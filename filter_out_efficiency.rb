@@ -57,12 +57,14 @@ UNFIXED_STATES.each do |state|
   copy1 = Marshal.load( Marshal.dump( strategy_candidates ) )
   copy1.each {|strategy| strategy[state] = :c }
   strategy_candidates = copy1
-  #copy2 = Marshal.load( Marshal.dump( strategy_candidates ) )
-  #copy2.each {|strategy| strategy[state] = :d }
-  #strategy_candidates = copy1 + copy2
+  if strategy_candidates.size < 65536
+    copy2 = Marshal.load( Marshal.dump( strategy_candidates ) )
+    copy2.each {|strategy| strategy[state] = :d }
+    strategy_candidates += copy2
+  end
 end
 
-pp strategy_candidates
+#pp strategy_candidates
 pp strategy_candidates.size
 
 def reaches_cc_from_1bit_noise?(str)
@@ -70,12 +72,14 @@ def reaches_cc_from_1bit_noise?(str)
   bc_state = [:c,:c,0,1]
   raise "must not happen" if a_state.nil? or bc_state.nil?
 
-  a_state_history = [ a_state ]
+  a_state_history = [ a_state.dup ]
   loop do
-    pp "a_state : ", a_state
-    pp "bc_state : ", bc_state
     a_action = str[ a_state ]
     bc_action = str[ bc_state ]
+    #pp "a_state : ", a_state
+    #pp "bc_state : ", bc_state
+    #pp "a_action : ", a_action
+    #pp "bc_action : ", bc_action
 
     a_state[0] = a_state[1]
     a_state[2] = a_state[3]
@@ -94,17 +98,19 @@ def reaches_cc_from_1bit_noise?(str)
       end
     else  # :a_action == :c
       if bc_action == :d
-        bc_state[3] == 1
+        bc_state[3] = 1
         bc_state[3] = -1 if a_state[0] == :c # consecutive defection
       else  # bc_action == :c
-        bc_state[3] == 0
+        bc_state[3] = 0
       end
     end
 
     # check loop
-    break if a_state_history.include?( a_action ) # we reached a loop
+    break if a_state_history.include?( a_state ) # we reached a loop
+    a_state_history << a_state.dup
   end
 
+  pp "final a_state: ", a_state
   a_state == [:c,:c,0,0]
 end
 
@@ -112,3 +118,4 @@ efficient_strategies = strategy_candidates.select do |str|
   reaches_cc_from_1bit_noise?(str)
 end
 
+pp efficient_strategies.size
