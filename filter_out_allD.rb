@@ -38,8 +38,9 @@ FIXED_STRATEGY = {
     [:c,:d,2, 2] => :d,
     [:c,:d,1,-1] => :d,
     [:c,:c,2, 2] => :d,
-    [:c,:c,1,-1] => :d
-    #[:c,:c,0, 0] => :c
+    [:c,:c,1,-1] => :d,
+    [:c,:c,0, 0] => :c,
+    [:c,:c,1, 1] => :d
 }
 
 UNFIXED_STATES = STATES - FIXED_STRATEGY.keys
@@ -114,6 +115,6 @@ def strategy_to_bits( strategy )
 end
 
 pp "# defensible : #{defensible_strategies.count}"
-pp defensible_strategies
+#pp defensible_strategies
 pp defensible_strategies.map {|str| strategy_to_bits(str) }
 
