@@ -40,7 +40,9 @@ FIXED_STRATEGY = {
     [:c,:c,2, 2] => :d,
     [:c,:c,1,-1] => :d,
     [:c,:c,0, 0] => :c,
-    [:c,:c,1, 1] => :d
+    [:c,:c,1, 1] => :d,
+    [:c,:d,1, 2] => :d,
+    [:c,:d,2, 1] => :d
 }
 
 UNFIXED_STATES = STATES - FIXED_STRATEGY.keys
