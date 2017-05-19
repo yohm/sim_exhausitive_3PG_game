@@ -163,13 +163,15 @@ if __FILE__ == $0
   #p State::ALL_STATES.size
   #p s = Strategy.new( [:c,:d]*20 )
   #p s.valid?
+  require 'fileutils'
+  FileUtils.mkdir_p("step1")
   se = StrategyEnumerator.new
   $stderr.puts se.fixed_actions_to_bit
   count = 0
   total_num_strategies = (2**28)*9/16
   NUM_NODES = 384
   num_strategy_per_node = (total_num_strategies.to_f / NUM_NODES).ceil
-  fname = sprintf("bits%03d.txt", count / num_strategy_per_node )
+  fname = sprintf("step1/bits%03d.txt", count / num_strategy_per_node )
   io = File.open(fname,'w')
   se.all_strategy.each do |stra|
     io.puts stra.to_bits
@@ -180,7 +182,7 @@ if __FILE__ == $0
     end
     if count % num_strategy_per_node == 0
       io.close
-      fname = sprintf("bits%03d.txt", count / num_strategy_per_node )
+      fname = sprintf("step1/bits%03d.txt", count / num_strategy_per_node )
       io = File.open(fname,'w')
     end
   end
