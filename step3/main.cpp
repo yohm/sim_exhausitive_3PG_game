@@ -4,13 +4,27 @@
 int main() {
   std::cout << "Hello, World!" << std::endl;
 
-  State s( C, D, 2, 0);
-  std::cout << s.toString() << std::endl;
+  ShortState s( C, D, 1, -1);
+  std::cout << "state: " << s.toString() << std::endl;
 
   FullState fs(C,D,D,D,C,C);
-  std::cout << fs.toString() << std::endl;
+  std::cout << "fullState: " << fs.toString() << std::endl;
+  std::cout << "from B: " << fs.FromB().toString() << std::endl;
+  std::cout << "from C: " << fs.FromC().toString() << std::endl;
 
-  Strategy str("ccddc");
+  const std::array<Action,40> acts = {
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D
+  };
+  Strategy str(acts);
+  std::cout << "strategy :" << str.toString() << std::endl;
+
+  Strategy str2("ccccddddccccddddccccddddccccddddccccdddd");
+  std::cout << "strategy2:" << str2.toString() << std::endl;
+
 
   return 0;
 }
