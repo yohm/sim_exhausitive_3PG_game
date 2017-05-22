@@ -56,6 +56,21 @@ public:
 
   FullState FromB() const { return FullState(b_2, b_1, a_2, a_1, c_2, c_1); } // full state from B's viewpoint
   FullState FromC() const { return FullState(c_2, c_1, a_2, a_1, b_2, b_1); } // full state from B's viewpoint
+  ShortState ToShortState() const {
+    int8_t bc_2 = 0;
+    if( b_2 == D && c_2 == D ) { bc_2 = 2; }
+    else if( b_2 == D || c_2 == D ) { bc_2 = 1; }
+    else { bc_2 = 0; }
+
+    int8_t bc_1 = 0;
+    if( b_1 == D && c_1 == D ) { bc_1 = 2; }
+    else if( b_1 == D || c_1 == D ) {
+      if( bc_2 == 1 && b_1 == b_2 ) { bc_1 = -1; }
+      else { bc_1 = 1; }
+    }
+    else { bc_1 = 0 ; }
+    return ShortState(a_2,a_1,bc_2,bc_1);
+  }
 };
 
 class Strategy {

@@ -11,6 +11,9 @@ int main() {
   std::cout << "fullState: " << fs.toString() << std::endl;
   std::cout << "from B: " << fs.FromB().toString() << std::endl;
   std::cout << "from C: " << fs.FromC().toString() << std::endl;
+  std::cout << "toShort: " << fs.ToShortState().toString() << std::endl;
+  std::cout << "toShortFromB: " << fs.FromB().ToShortState().toString() << std::endl;
+  std::cout << "toShortFromC: " << fs.FromC().ToShortState().toString() << std::endl;
 
   const std::array<Action,40> acts = {
       C,C,C,C,D,D,D,D,
