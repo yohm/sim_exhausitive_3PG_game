@@ -20,6 +20,17 @@ void test_State() {
   std::cout << "  toShortFromC: " << fs.FromC().ToShortState().toString() << std::endl;
   std::cout << "  id: " << fs.FromC().ID() << std::endl;
   std::cout << "restored_from_id: " << FullState(fs.FromC().ID()).toString() << std::endl;
+
+
+  std::cout << "NumDiff 0=" << fs.NumDiffInT1(fs) << std::endl;
+  FullState fs2(C,D,D,C,C,C);
+  std::cout << "NumDiff 1=" << fs.NumDiffInT1(fs2) << std::endl;
+  FullState fs3(C,D,D,C,C,D);
+  std::cout << "NumDiff 2=" << fs.NumDiffInT1(fs3) << std::endl;
+  FullState fs4(C,C,D,C,C,D);
+  std::cout << "NumDiff 3=" << fs.NumDiffInT1(fs4) << std::endl;
+  FullState fs5(D,D,D,D,C,C);
+  std::cout << "NumDiff -1=" << fs.NumDiffInT1(fs5) << std::endl;
 }
 
 void test_Strategy() {
@@ -67,6 +78,7 @@ void test_Game() {
   FullState init3(C,D,D,C,D,D);
   FullState s3= g.Update( init3 );
   std::cout << "  updated from init3: " << s3.toString() << std::endl;
+
 }
 
 int main() {
@@ -75,7 +87,6 @@ int main() {
   test_State();
   test_Strategy();
   test_Game();
-
 
   return 0;
 }

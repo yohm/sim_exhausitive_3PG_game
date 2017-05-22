@@ -59,6 +59,18 @@ public:
       b_1( ((id>>2)&1)?D:C ), c_2( ((id>>1)&1)?D:C ), c_1( ((id>>0)&1)?D:C ) {};
   const Action a_2, a_1, b_2, b_1, c_2, c_1;
 
+  bool operator==(const FullState & rhs) const {
+    return (a_2==rhs.a_2 && a_1==rhs.a_1 && b_2==rhs.b_2 && b_1==rhs.b_1 && c_2==rhs.c_2 && c_1&&rhs.c_1);
+  }
+  int NumDiffInT1(const FullState& rhs) const {
+    if( a_2 != rhs.a_2 || b_2 != rhs.b_2 || c_2 != rhs.c_2 ) { return -1; }
+    int count = 0;
+    if( a_1 != rhs.a_1 ) { count += 1; }
+    if( b_1 != rhs.b_1 ) { count += 1; }
+    if( c_1 != rhs.c_1 ) { count += 1; }
+    return count;
+  }
+
   std::string toString() const {
     std::ostringstream oss;
     oss << A2C(a_2) << A2C(a_1)
