@@ -78,7 +78,27 @@ void test_Game() {
   FullState init3(C,D,D,C,D,D);
   FullState s3= g.Update( init3 );
   std::cout << "  updated from init3: " << s3.toString() << std::endl;
+}
 
+void test_UMatrix() {
+  std::cout << "testing Game" << std::endl;
+  const std::array<Action,40> acts = {
+      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C
+  };
+  Strategy sa(acts), sb(acts), sc(acts);
+
+  Game g(sa,sb,sc);
+  umatrix_t m = {0.0};
+  g.MakeUMatrix(0.01, m);
+
+  for( auto v : m ) {
+    for( double x : v ) {
+      printf("%.3f ", x);
+    }
+    printf("\n");
+  }
 }
 
 int main() {
@@ -87,6 +107,7 @@ int main() {
   test_State();
   test_Strategy();
   test_Game();
+  test_UMatrix();
 
   return 0;
 }
