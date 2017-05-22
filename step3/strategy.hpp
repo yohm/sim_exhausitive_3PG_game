@@ -44,6 +44,9 @@ class FullState {
 public:
   FullState(Action _a_2, Action _a_1, Action _b_2, Action _b_1, Action _c_2, Action _c_1):
       a_2(_a_2), a_1(_a_1), b_2(_b_2), b_1(_b_1), c_2(_c_2), c_1(_c_1) {};
+  FullState(size_t id):
+      a_2( ((id>>5)&1)?D:C ), a_1( ((id>>4)&1)?D:C ), b_2( ((id>>3)&1)?D:C ),
+      b_1( ((id>>2)&1)?D:C ), c_2( ((id>>1)&1)?D:C ), c_1( ((id>>0)&1)?D:C ) {};
   const Action a_2, a_1, b_2, b_1, c_2, c_1;
 
   std::string toString() const {
@@ -55,7 +58,7 @@ public:
   }
 
   FullState FromB() const { return FullState(b_2, b_1, a_2, a_1, c_2, c_1); } // full state from B's viewpoint
-  FullState FromC() const { return FullState(c_2, c_1, a_2, a_1, b_2, b_1); } // full state from B's viewpoint
+  FullState FromC() const { return FullState(c_2, c_1, a_2, a_1, b_2, b_1); } // full state from C's viewpoint
   ShortState ToShortState() const {
     int8_t bc_2 = 0;
     if( b_2 == D && c_2 == D ) { bc_2 = 2; }
@@ -70,6 +73,17 @@ public:
     }
     else { bc_1 = 0 ; }
     return ShortState(a_2,a_1,bc_2,bc_1);
+  }
+
+  size_t ID() const {  // ID must be 0~63 integer. AllC: 0, AllD: 63
+    size_t id = 0;
+    if( a_2 == D ) { id += 1 << 5; }
+    if( a_1 == D ) { id += 1 << 4; }
+    if( b_2 == D ) { id += 1 << 3; }
+    if( b_1 == D ) { id += 1 << 2; }
+    if( c_2 == D ) { id += 1 << 1; }
+    if( c_1 == D ) { id += 1 << 0; }
+    return id;
   }
 };
 
@@ -92,5 +106,5 @@ private:
 
 };
 
-
 #endif //STEP3_STRATEGY_HPP
+
