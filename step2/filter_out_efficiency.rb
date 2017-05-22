@@ -1,6 +1,6 @@
 require 'pp'
-require_relative 'graph'
-require_relative 'strategy'
+require_relative '../graph'
+require_relative '../strategy'
 
 # Let us consider that Alice had a noise.
 # The state for Alice is (CD,00) while the state for the others are (CC01).
@@ -65,8 +65,18 @@ str = Strategy.make_from_bits(bits)
 p reaches_cc_from_1bit_noise?(str)
 =end
 
-fname = ARGV[0]
-outfilename = "step2/" + File.basename(fname)
+unless ARGV.size == 2
+  $stderr.puts "usage: ruby #{__FILE__} outdir input_filename"
+  raise "invalid argument"
+end
+
+outdir = ARGV[0]
+fname = ARGV[1]
+outfilename = outdir + '/' + File.basename(fname)
+if File.expand_path(fname) == File.expand_path(outfilename)
+  $stderr.puts "input filename and output filename coincides"
+  raise "invalid output dir"
+end
 io = File.open(outfilename, 'w')
 $stderr.puts "reading #{fname}, printing #{outfilename}"
 File.open(fname).each do |line|
