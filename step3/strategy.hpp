@@ -31,10 +31,20 @@ public:
     oss << A2C(a_2) << A2C(a_1) << (int)bc_2 << (int)bc_1;
     return oss.str();
   }
+  bool operator==(const ShortState & rhs) const {
+    return (a_2==rhs.a_2 && a_1==rhs.a_1 && bc_2==rhs.bc_2 && bc_1==rhs.bc_1);
+  }
 
   static const Action A_STATES[4][2];
   static const int8_t BC_STATES[10][2];
   static const ShortState ALL_STATES[40];
+
+  size_t ID() const {
+    for( size_t i=0; i < 40; i++) {
+      if( ALL_STATES[i] == *this ) { return i; }
+    }
+    throw "must not happen";
+  }
 private:
 };
 
@@ -93,16 +103,26 @@ public:
   Strategy( const char acts[40] );
   ~Strategy() {};
   std::array<Action,40> actions;
+  std::array<Action,64> fullActions;
 
   std::string toString() const {
     std::ostringstream oss;
-    for( auto act : actions ) {
-      oss << A2C(act);
+    for( Action a : actions ) {
+      oss << A2C(a);
     }
     return oss.str();
   }
+  std::string toFullString() const {
+    std::ostringstream oss;
+    for( Action a : fullActions ) {
+      oss << A2C(a);
+    }
+    return oss.str();
+  }
+  Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
 
 private:
+  void ConstructFullActions();
 
 };
 

@@ -72,11 +72,20 @@ const ShortState ShortState::ALL_STATES[40] = {
     ShortState( D, D, 2, 2 )
 };
 
-Strategy::Strategy(std::array<Action,40> acts): actions(acts) { }
+Strategy::Strategy(std::array<Action,40> acts): actions(acts) { ConstructFullActions(); }
 
 Strategy::Strategy(const char *acts) {
   for( size_t i=0; i<40; i++) {
     actions[i] = (acts[i] == 'c' ? C : D);
+  }
+  ConstructFullActions();
+}
+
+void Strategy::ConstructFullActions() {
+  for( size_t i=0; i<64; i++) {
+    FullState fs(i);
+    ShortState ss = fs.ToShortState();
+    fullActions[i] = actions[ss.ID()];
   }
 }
 
