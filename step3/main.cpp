@@ -101,6 +101,26 @@ void test_UMatrix() {
   }
 }
 
+void test_PayoffVector() {
+  std::cout << "testing payoff vector" << std::endl;
+
+  double r = 2.0, c = 1.0;
+  payoffv_t va, vb, vc;
+  Game::MakePayoffVector(r,c,va,vb,vc);
+
+  auto print_v = [](payoffv_t v) {
+    for( auto x : v ) { printf("%.2f ", x); }
+    printf("\n");
+  };
+
+  std::cout << "va: ";
+  print_v(va);
+  std::cout << "vb: ";
+  print_v(vb);
+  std::cout << "vc: ";
+  print_v(vc);
+}
+
 int main() {
   std::cout << "Hello, World!" << std::endl;
 
@@ -108,6 +128,7 @@ int main() {
   test_Strategy();
   test_Game();
   test_UMatrix();
+  test_PayoffVector();
 
   return 0;
 }

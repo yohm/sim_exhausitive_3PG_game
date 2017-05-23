@@ -9,6 +9,7 @@
 #define STEP3_GAME_HPP
 
 typedef std::array<std::array<double,64>,64> umatrix_t;
+typedef std::array<double,64> payoffv_t;
 
 class Game {
 public:
@@ -17,6 +18,9 @@ public:
   FullState Update(FullState fs);
   const Strategy sa, sb, sc;
   void MakeUMatrix( double e, umatrix_t & m );
+  static void MakePayoffVector( double r, double c, payoffv_t& va, payoffv_t& vb, payoffv_t& vc);
+  // returns payoff vectors. multiplication factor: r, cost: c
+
 };
 
 

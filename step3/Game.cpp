@@ -27,3 +27,19 @@ void Game::MakeUMatrix( double e, umatrix_t &m) {
     }
   }
 }
+
+void Game::MakePayoffVector(double r, double cost, payoffv_t &va, payoffv_t &vb, payoffv_t &vc) {
+  for( size_t i=0; i<64; i++) {
+    FullState fs(i);
+    const Action a = fs.a_1, b = fs.b_1, c = fs.c_1;
+    size_t num_C = 0;
+    if( a == C ) { num_C++;}
+    if( b == C ) { num_C++;}
+    if( c == C ) { num_C++;}
+    double g = num_C * cost * r / 3.0;
+
+    va[i] = ( a == C ) ? g-cost : g;
+    vb[i] = ( b == C ) ? g-cost : g;
+    vc[i] = ( c == C ) ? g-cost : g;
+  }
+}
