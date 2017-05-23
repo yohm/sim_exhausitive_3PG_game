@@ -13,14 +13,16 @@ bool IsEfficient(const Strategy& str) {
   const double c = 1.0;
   auto fs = g.AveragePayoffs(e,r,c,1024);
   double fa = std::get<0>(fs);
-  std::cout << fa <<std::endl;
+  // std::cerr << fa <<std::endl;
 
+  /*
   e = 0.005;
   fs = g.AveragePayoffs(e,r,c,1024);
   fa = std::get<0>(fs);
   std::cout << fa <<std::endl;
+   */
 
-  if( fa < 0.98 ) { return false; }
+  if( fa < (c*r-c) - e*10 ) { return false; }
   else { return true; }
 }
 
@@ -29,20 +31,24 @@ int main(int argc, char** argv) {
   if(argc != 2) {
     std::cerr << "Error: invalid argument" << std::endl;
     std::cerr << "  Usage: " << argv[0] << " <input_strategies.txt>" << std::endl;
+    throw "invalid argument";
   }
 
   std::ifstream fin(argv[1]);
 
   std::string line;
+  int count = 0;
   while( std::getline(fin,line) ) {
-    std::cout << line << line.size() << std::endl;
+    //std::cout << line << line.size() << std::endl;
 
     const Strategy str( line.c_str() );
-    std::cout << str.toString() << std::endl;
-    std::cout << str.toFullString() << std::endl;
-    std::cout << IsEfficient(str) << std::endl;
-
-
+    //std::cout << str.toString() << std::endl;
+    //std::cout << str.toFullString() << std::endl;
+    if( IsEfficient(str) ) {
+      std::cout << str.toString() << std::endl;
+    }
+    count++;
+    if( count % 1000 == 0 ) { std::cerr << "count: " << count << std::endl; }
   }
 
   return 0;
