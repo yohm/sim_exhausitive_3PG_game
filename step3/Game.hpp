@@ -3,7 +3,7 @@
 //
 
 #include <array>
-#include <tuple>
+//#include <tuple>
 #include "strategy.hpp"
 
 #ifndef STEP3_GAME_HPP
@@ -18,7 +18,7 @@ public:
   ~Game() {};
   FullState Update(FullState fs) const;
   const Strategy sa, sb, sc;
-  std::tuple<double,double,double> AveragePayoffs(double error, double multi_f, double cost, size_t num_iter=1024) const;
+  std::array<double,3> AveragePayoffs(double error, double multi_f, double cost, size_t num_iter=1024) const;
   void MakeUMatrix( double e, umatrix_t & m ) const;
   static void MakePayoffVector( double r, double c, vec64_t& va, vec64_t& vb, vec64_t& vc);
   // returns payoff vectors. multiplication factor: r, cost: c

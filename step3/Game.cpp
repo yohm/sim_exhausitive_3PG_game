@@ -84,7 +84,7 @@ double Game::_R2(const vec64_t &v1, const vec64_t &v2) {
   return d;
 }
 
-std::tuple<double, double, double> Game::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter) const {
+std::array<double,3> Game::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter) const {
   umatrix_t m;
   MakeUMatrix(error, m);
   double delta = 1.0e-8;
@@ -104,6 +104,7 @@ std::tuple<double, double, double> Game::AveragePayoffs(double error, double mul
   double fa = Game::Dot(out, va);
   double fb = Game::Dot(out, vb);
   double fc = Game::Dot(out, vc);
-  return std::tuple<double, double, double>(fa,fb,fc);
+  std::array<double,3> ret = {fa,fb,fc};
+  return ret;
 }
 
