@@ -1,134 +1,50 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "strategy.hpp"
 #include "Game.hpp"
 
-void test_State() {
-  ShortState s( C, D, 1, -1);
-  std::cout << "state: " << s.toString() << std::endl;
-  std::cout << "  id: " << s.ID() << std::endl;
-  std::cout << "restored_from_id: " << ShortState::ALL_STATES[ s.ID() ].toString() << std::endl;
+bool IsEfficient(const Strategy& str) {
+  Game g(str, str, str);
+  umatrix_t m;
 
-  FullState fs(C,D,D,D,C,C);
-  std::cout << "fullState: " << fs.toString() << std::endl;
-  std::cout << "  toShort: " << fs.ToShortState().toString() << std::endl;
-  std::cout << "  id: " << fs.ID() << std::endl;
-  std::cout << "restored_from_id: " << FullState(fs.ID()).toString() << std::endl;
-  std::cout << "from B: " << fs.FromB().toString() << std::endl;
-  std::cout << "  toShortFromB: " << fs.FromB().ToShortState().toString() << std::endl;
-  std::cout << "  id: " << fs.FromB().ID() << std::endl;
-  std::cout << "from C: " << fs.FromC().toString() << std::endl;
-  std::cout << "  toShortFromC: " << fs.FromC().ToShortState().toString() << std::endl;
-  std::cout << "  id: " << fs.FromC().ID() << std::endl;
-  std::cout << "restored_from_id: " << FullState(fs.FromC().ID()).toString() << std::endl;
+  double e = 0.01;
+  const double r = 2.0;
+  const double c = 1.0;
+  auto fs = g.AveragePayoffs(e,r,c,1024);
+  double fa = std::get<0>(fs);
+  std::cout << fa <<std::endl;
 
+  e = 0.005;
+  fs = g.AveragePayoffs(e,r,c,1024);
+  fa = std::get<0>(fs);
+  std::cout << fa <<std::endl;
 
-  std::cout << "NumDiff 0=" << fs.NumDiffInT1(fs) << std::endl;
-  FullState fs2(C,D,D,C,C,C);
-  std::cout << "NumDiff 1=" << fs.NumDiffInT1(fs2) << std::endl;
-  FullState fs3(C,D,D,C,C,D);
-  std::cout << "NumDiff 2=" << fs.NumDiffInT1(fs3) << std::endl;
-  FullState fs4(C,C,D,C,C,D);
-  std::cout << "NumDiff 3=" << fs.NumDiffInT1(fs4) << std::endl;
-  FullState fs5(D,D,D,D,C,C);
-  std::cout << "NumDiff -1=" << fs.NumDiffInT1(fs5) << std::endl;
+  if( fa < 0.98 ) { return false; }
+  else { return true; }
 }
 
-void test_Strategy() {
-  const std::array<Action,40> acts = {
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D
-  };
-  Strategy str(acts);
-  std::cout << "strategy :" << str.toString() << std::endl;
-  std::cout << "  full actions :" << str.toFullString() << std::endl;
-  FullState allC(C,C,C,C,C,C);
-  std::cout << " action at:" << allC.ID() << " is " << A2C(str.ActionAt(allC)) << std::endl;
-  FullState allD(D,D,D,D,D,D);
-  std::cout << " action at:" << allD.ID() << " is " << A2C(str.ActionAt(allD)) << std::endl;
-  FullState fs3(C,C,C,C,D,D);
-  std::cout << " action at:" << fs3.ID() << " is " << A2C(str.ActionAt(fs3)) << std::endl;
+int main(int argc, char** argv) {
 
-  Strategy str2("ccccddddccccddddccccddddccccddddccccdddd");
-  std::cout << "strategy2:" << str2.toString() << std::endl;
-}
-
-void test_Game() {
-  std::cout << "testing Game" << std::endl;
-  const std::array<Action,40> acts = {
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D,
-      C,C,C,C,D,D,D,D
-  };
-  Strategy sa(acts), sb(acts), sc(acts);
-
-  Game g(sa,sb,sc);
-  FullState initC(C,C,C,C,C,C);
-  FullState updated = g.Update( initC );
-  std::cout << "  updated from C: " << updated.toString() << std::endl;
-
-  FullState initD(D,D,D,D,D,D);
-  FullState s = g.Update( initD );
-  std::cout << "  updated from D: " << s.toString() << std::endl;
-
-  FullState init3(C,D,D,C,D,D);
-  FullState s3= g.Update( init3 );
-  std::cout << "  updated from init3: " << s3.toString() << std::endl;
-}
-
-void test_UMatrix() {
-  std::cout << "testing Game" << std::endl;
-  const std::array<Action,40> acts = {
-      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
-      C,C,C,C,C,C,C,C
-  };
-  Strategy sa(acts), sb(acts), sc(acts);
-
-  Game g(sa,sb,sc);
-  umatrix_t m = {0.0};
-  g.MakeUMatrix(0.01, m);
-
-  for( auto v : m ) {
-    for( double x : v ) {
-      printf("%.3f ", x);
-    }
-    printf("\n");
+  if(argc != 2) {
+    std::cerr << "Error: invalid argument" << std::endl;
+    std::cerr << "  Usage: " << argv[0] << " <input_strategies.txt>" << std::endl;
   }
-}
 
-void test_PayoffVector() {
-  std::cout << "testing payoff vector" << std::endl;
+  std::ifstream fin(argv[1]);
 
-  double r = 2.0, c = 1.0;
-  payoffv_t va, vb, vc;
-  Game::MakePayoffVector(r,c,va,vb,vc);
+  std::string line;
+  while( std::getline(fin,line) ) {
+    std::cout << line << line.size() << std::endl;
 
-  auto print_v = [](payoffv_t v) {
-    for( auto x : v ) { printf("%.2f ", x); }
-    printf("\n");
-  };
+    const Strategy str( line.c_str() );
+    std::cout << str.toString() << std::endl;
+    std::cout << str.toFullString() << std::endl;
+    std::cout << IsEfficient(str) << std::endl;
 
-  std::cout << "va: ";
-  print_v(va);
-  std::cout << "vb: ";
-  print_v(vb);
-  std::cout << "vc: ";
-  print_v(vc);
-}
 
-int main() {
-  std::cout << "Hello, World!" << std::endl;
-
-  test_State();
-  test_Strategy();
-  test_Game();
-  test_UMatrix();
-  test_PayoffVector();
+  }
 
   return 0;
 }
+
