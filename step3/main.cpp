@@ -22,7 +22,7 @@ bool IsEfficient(const Strategy& str) {
   std::cout << fa <<std::endl;
    */
 
-  if( fa < (c*r-c) - e*10 ) { return false; }
+  if( fa < 0.7 /*(c*r-c) - 10*e */ ) { return false; }
   else { return true; }
 }
 
