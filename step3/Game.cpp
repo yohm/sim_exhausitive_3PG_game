@@ -87,8 +87,9 @@ double Game::_R2(const vec64_t &v1, const vec64_t &v2) {
 std::tuple<double, double, double> Game::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter) const {
   umatrix_t m;
   MakeUMatrix(error, m);
-  double delta = 1.0e-8;
-  vec64_t init = {1.0,0.0};
+  double delta = 1.0e-10;
+  vec64_t init = { 0.0 };
+  for( auto& x : init ) { x = 1.0 / 64.0; }
   vec64_t out = Game::PowerMethod(m, init, num_iter);
   double r2 = _R2(init,out);
   while( r2 > delta ) {
