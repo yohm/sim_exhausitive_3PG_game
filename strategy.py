@@ -1,5 +1,6 @@
 import networkx as nx
 from networkx import algorithms
+import pygraphviz as pgv
 
 A_STATES = [
     ('c','c'),
@@ -29,14 +30,34 @@ for a in A_STATES:
 def state_to_index( state ):
     return ALL_STATES.index( state )
 
-ALL_ABC_STATES = []
+ALL_FULL_STATES = []
 for a in A_STATES:
     for b in A_STATES:
         for c in A_STATES:
-            ALL_ABC_STATES.append( a+b+c )
+            ALL_FULL_STATES.append( a+b+c )
 
-def abc_state_to_index( abc_state ):
-    return ALL_ABC_STATES.index( abc_state )
+def full_state_to_index( full_state ):
+    return ALL_FULL_STATES.index( full_state )
+
+def full_state_to_str( full_state ):
+    return ''.join(list(full_state))
+
+def full_state_to_risk( full_state ):
+    """returns -1,0,1 if the state is risky, neutral, exploitable."""
+    if full_state[1] == 'c':
+        if full_state[3] == 'c' and full_state[5] == 'c':  # => ccc
+            return 0
+        elif full_state[3] == 'd' and full_state[5] == 'd':  # => cdd
+            return -2
+        else:  # => ccd or cdc
+            return -1
+    else:
+        if full_state[3] == 'd' and full_state[5] == 'd':  # => ddd
+            return 0
+        elif full_state[3] == 'c' and full_state[5] == 'c':  # => dcc
+            return 2
+        else:
+            return 1
 
 class Strategy:
 
@@ -56,50 +77,74 @@ class Strategy:
 
     def transition_graph(self):
         g = nx.DiGraph()
-        for abc_state in ALL_ABC_STATES:
-            u = abc_state_to_index(abc_state)
-            next_states = self._next_possible_abc_states(abc_state)
+        for full_state in ALL_FULL_STATES:
+            u = full_state_to_index(full_state)
+            next_states = self._next_possible_full_states(full_state)
             for next_state in next_states:
-                v = abc_state_to_index(next_state)
+                v = full_state_to_index(next_state)
                 g.add_edge(u,v)
         return g
 
-    def _next_possible_abc_states(self,abc_state):
-        s = self._abc_state_to_state(abc_state)
+    def to_dot(self,filename):
+        f = open(filename,'w')
+        f.write("digraph \"\" {\n")
+        g = self.transition_graph()
+        for n in g.nodes():
+            stat = ALL_FULL_STATES[n]
+            s = full_state_to_str(stat)
+            risk = full_state_to_risk(stat)
+            if risk == -2:
+                color = "red"
+            elif risk == -1:
+                color = "orange"
+            elif risk == 0:
+                color = "black"
+            elif risk == 1:
+                color = "lightblue"
+            elif risk == 2:
+                color = "blue"
+            f.write("  %d [ label=%s; fontcolor = %s ];\n" % (n,s,color) )
+        for o,d in g.edges():
+            f.write("  %d -> %d;\n" % (o,d) )
+        f.write("}\n")
+        f.close()
+
+    def _next_possible_full_states(self,full_state):
+        s = self._full_state_to_state(full_state)
         a_action = self.strategy[s]
         next_states = []
         for b_action in ['c','d']:
             for c_action in ['c','d']:
                 s = (
-                    abc_state[1],
+                    full_state[1],
                     a_action,
-                    abc_state[3],
+                    full_state[3],
                     b_action,
-                    abc_state[5],
+                    full_state[5],
                     c_action
                 )
                 next_states.append(s)
         return next_states
 
-    def _abc_state_to_state(self, abc):
-        if abc[2] == 'd' and abc[4] == 'd':
+    def _full_state_to_state(self, full):
+        if full[2] == 'd' and full[4] == 'd':
             s2 = 2
-        elif abc[2] == 'd' or abc[4] == 'd':
+        elif full[2] == 'd' or full[4] == 'd':
             s2 = 1
         else:
             s2 = 0
 
-        if abc[3] == 'd' and abc[5] == 'd':
+        if full[3] == 'd' and full[5] == 'd':
             s3 = 2
-        elif abc[3] == 'd' or abc[5] == 'd':
+        elif full[3] == 'd' or full[5] == 'd':
             s3 = 1
             if s2 == 1:
-                if abc[2] == 'd' and abc[3] == 'd': s3 = -1
-                if abc[4] == 'd' and abc[5] == 'd': s3 = -1
+                if full[2] == 'd' and full[3] == 'd': s3 = -1
+                if full[4] == 'd' and full[5] == 'd': s3 = -1
         else:
             s3 = 0
 
-        state = ( abc[0], abc[1], s2, s3 )
+        state = ( full[0], full[1], s2, s3 )
         return state
 
 
@@ -118,10 +163,12 @@ if __name__ == '__main__':
         assert stra.to_bits() == bits
         g = stra.transition_graph()
         print("%d nodes, %d edges in the transition graph" % (len(g.nodes()), len(g.edges())))
-        for (i,cycle) in enumerate(algorithms.simple_cycles(g)):
-            if (i % 10000) == 0:
-                print("%d"%i)
+        stra.to_dot('foo.dot')
 
-        print("ALL_EXPLICIT_STATES: ", ALL_ABC_STATES, len(ALL_ABC_STATES) )
+        #for (i,cycle) in enumerate(algorithms.simple_cycles(g)):
+        #    if (i % 10000) == 0:
+        #        print("%d"%i)
+
+        #print("ALL_EXPLICIT_STATES: ", ALL_FULL_STATES, len(ALL_FULL_STATES) )
     main()
 
