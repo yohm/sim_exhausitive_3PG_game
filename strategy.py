@@ -103,7 +103,7 @@ class Strategy:
                 color = "lightblue"
             elif risk == 2:
                 color = "blue"
-            f.write("  %d [ label=%s; fontcolor = %s ];\n" % (n,s,color) )
+            f.write("  %d [ label=\"%d_%s\"; fontcolor = %s ];\n" % (n,n,s,color) )
         for o,d in g.edges():
             f.write("  %d -> %d;\n" % (o,d) )
         f.write("}\n")
@@ -147,6 +147,40 @@ class Strategy:
         state = ( full[0], full[1], s2, s3 )
         return state
 
+    def has_risky_SCC(self):
+        if self.risky_SCC():
+            return True
+        else:
+            return False
+
+    def risky_SCC(self):
+        """returns a risky SCC. Used mainly for visualization"""
+        g = self.transition_graph()
+        good_nodes = [full_state_to_index(s) for s in ALL_FULL_STATES if full_state_to_risk(s) > 0]
+        #print(good_nodes)
+        g.remove_nodes_from(good_nodes)
+        for component in nx.strongly_connected_components(g):
+            if self._has_risky_loop_in_component(g, component):
+                return component
+        return None
+
+    def _has_risky_loop_in_component(self,g,component):
+        if len(component) > 1:
+            states = [ ALL_FULL_STATES[n] for n in component ]
+            risks = [ full_state_to_risk(s) for s in states ]
+            if any( r < 0 for r in risks ):
+                return True
+            else:
+                return False
+        else:
+            n = list(component)[0]
+            stat = ALL_FULL_STATES[n]
+            if full_state_to_risk(stat) >= 0:
+                return False
+            for org,dst in g.edges([n]):
+                if org == dst:  # risky self loop
+                    return True
+            return False
 
 if __name__ == '__main__':
     import sys
