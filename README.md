@@ -43,3 +43,7 @@ For these, we further filtered out the strategies using e=0.005 and threshold=0.
 
 Although we tried to filter out some by Step 2, criteria for Step 3 is more strict. So we applied this filtering against the results of Step 1.
 
+```
+ls filtered*.txt | xargs -n 1 -P 6 -I{} -t sh -c '../step3/main.out 0.005 "$1" > "$1_out"' -- {}
+```
+
