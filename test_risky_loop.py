@@ -45,12 +45,14 @@ if __name__ == '__main__':
         print(infile)
         f = open(infile, 'r')
         count = 0
+        s = set(range(64))
         for line in f:
             bits = line.strip()
             stra = strategy.Strategy.make_from_bits(bits)
             b = stra.has_risky_SCC()
             scc = stra.risky_SCC()
-            print( stra.to_bits(), b, len(scc) )
+            s = s.intersection(set(scc))
+            print( stra.to_bits(), b, scc, s )
             count += 1
             if b == False:
                 break

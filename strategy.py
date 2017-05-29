@@ -85,10 +85,11 @@ class Strategy:
                 g.add_edge(u,v)
         return g
 
-    def to_dot(self,filename):
+    def to_dot(self,filename,g=None):
         f = open(filename,'w')
         f.write("digraph \"\" {\n")
-        g = self.transition_graph()
+        if g == None:
+            g = self.transition_graph()
         for n in g.nodes():
             stat = ALL_FULL_STATES[n]
             s = full_state_to_str(stat)
