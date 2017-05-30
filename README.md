@@ -20,8 +20,8 @@ To print all these strategies, run the following command.
 ruby step1/strategy_enumerator.rb step1_result
 ```
 
-It will create "step1" directory, and then print out strategies in "string" format into multiple files.
-By default, the number of files is set to 384.
+It will create "step1_result" file.
+You should split the output into several files in order to use it in the following steps.
 
 ## Step 2
 
