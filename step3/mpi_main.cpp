@@ -5,11 +5,11 @@
 #include "strategy.hpp"
 #include "Game.hpp"
 
-bool IsEfficient(const Strategy& str) {
+bool IsEfficient(const Strategy& str, double e, double th) {
   Game g(str, str, str);
   umatrix_t m;
 
-  double e = 0.01;
+  //double e = 0.01;
   const double r = 2.0;
   const double c = 1.0;
   auto fs = g.AveragePayoffs(e,r,c,1024);
@@ -23,7 +23,7 @@ bool IsEfficient(const Strategy& str) {
   std::cout << fa <<std::endl;
    */
 
-  if( fa < 0.7 /*(c*r-c) - 10*e */ ) { return false; }
+  if( fa < th /*(c*r-c) - 10*e */ ) { return false; }
   else { return true; }
 }
 
@@ -31,8 +31,18 @@ int main(int argc, char** argv) {
 
   MPI_Init(&argc, &argv);
 
+  if( argc != 3 ) {
+    std::cerr << "Error : invalid argument" << std::endl;
+    std::cerr << "  Usage : " << argv[0] << " <e> <threshold>" << std::endl;
+    MPI_Finalize();
+    return 1;
+  }
+
   int my_rank = 0;
   MPI_Comm_rank( MPI_COMM_WORLD, &my_rank );
+
+  double e = std::atof( argv[1] );
+  double th = std::atof( argv[2] );
 
   char myfilename[128], myoutfilename[128];
   sprintf(myfilename, "bits%04d.txt", my_rank);
@@ -47,7 +57,7 @@ int main(int argc, char** argv) {
     const Strategy str( line.c_str() );
     //std::cout << str.toString() << std::endl;
     //std::cout << str.toFullString() << std::endl;
-    if( IsEfficient(str) ) {
+    if( IsEfficient(str, e, th) ) {
       fout << str.toString() << std::endl;
       filtered_count++;
     }
