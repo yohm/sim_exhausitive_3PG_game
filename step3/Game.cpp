@@ -98,6 +98,11 @@ std::array<double,3> Game::AveragePayoffs(double error, double multi_f, double c
     r2 = _R2(init,out);
     // std::cerr << "iterating : " << r2 << std::endl;
   }
+#ifdef DEBUG
+  for( auto x: out ) {
+    std::cerr << x << std::endl;
+  }
+#endif
 
   vec64_t va, vb, vc;
   Game::MakePayoffVector(multi_f, cost, va, vb, vc);
