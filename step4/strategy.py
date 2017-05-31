@@ -85,6 +85,15 @@ class Strategy:
                 g.add_edge(u,v)
         return g
 
+    def transition_graph_same_stra(self):
+        g = nx.DiGraph()
+        for full_state in ALL_FULL_STATES:
+            u = full_state_to_index(full_state)
+            next_state = self._next_state_with_same_strategy(full_state)
+            v = full_state_to_index(next_state)
+            g.add_edge(u,v)
+        return g
+
     def to_dot(self,filename,g=None):
         f = open(filename,'w')
         f.write("digraph \"\" {\n")
@@ -126,6 +135,18 @@ class Strategy:
                 )
                 next_states.append(s)
         return next_states
+
+    def _next_state_with_same_strategy(self, full_state):
+        sa = self._full_state_to_state(full_state)
+        a_action = self.strategy[sa]
+        fs_b = (full_state[2],full_state[3],full_state[0],full_state[1],full_state[4],full_state[5])
+        fs_c = (full_state[4],full_state[5],full_state[0],full_state[1],full_state[2],full_state[3])
+        sb = self._full_state_to_state(fs_b)
+        sc = self._full_state_to_state(fs_c)
+        b_action = self.strategy[sb]
+        c_action = self.strategy[sc]
+        next_state = (full_state[1],a_action,full_state[3],b_action,full_state[5],c_action)
+        return next_state
 
     def _full_state_to_state(self, full):
         if full[2] == 'd' and full[4] == 'd':
