@@ -3,7 +3,8 @@
 //
 
 #include <iostream>
-#include "strategy.hpp"
+#include "Strategy.hpp"
+
 
 char A2C( Action act ) {
   return act == C ? 'c' : 'd';
@@ -94,7 +95,7 @@ Graph Strategy::TransitionGraph() const {
   for( size_t i=0; i<64; i++) {
     FullState fs(i);
     std::vector<FullState> next_states;
-    NextPossibleFullStates(next_states);
+    //NextPossibleFullStates(next_states);
     for( auto next_s: next_states) {
       size_t u = fs.ID();
       size_t v = next_s.ID();

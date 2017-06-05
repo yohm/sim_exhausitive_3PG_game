@@ -8,8 +8,8 @@
 #include <cstdint>
 #include "Graph.hpp"
 
-#ifndef STEP3_STRATEGY_HPP
-#define STEP3_STRATEGY_HPP
+#ifndef STRATEGY_HPP
+#define STRATEGY_HPP
 
 enum Action {
   C,
@@ -140,5 +140,5 @@ private:
 
 };
 
-#endif //STEP3_STRATEGY_HPP
+#endif //STRATEGY_HPP
 

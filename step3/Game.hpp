@@ -4,10 +4,10 @@
 
 #include <array>
 //#include <tuple>
-#include "strategy.hpp"
+#include "Strategy.hpp"
 
-#ifndef STEP3_GAME_HPP
-#define STEP3_GAME_HPP
+#ifndef GAME_HPP
+#define GAME_HPP
 
 typedef std::array<std::array<double,64>,64> umatrix_t;
 typedef std::array<double,64> vec64_t;
@@ -28,4 +28,4 @@ public:
   static void _MultiplyAndNomalize(const umatrix_t &m, const vec64_t &v, vec64_t &result);
 };
 
-#endif //STEP3_GAME_HPP
+#endif //GAME_HPP
