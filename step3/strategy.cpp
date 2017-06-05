@@ -89,3 +89,18 @@ void Strategy::ConstructFullActions() {
   }
 }
 
+Graph Strategy::TransitionGraph() const {
+  Graph g(64);
+  for( size_t i=0; i<64; i++) {
+    FullState fs(i);
+    std::vector<FullState> next_states;
+    NextPossibleFullStates(next_states);
+    for( auto next_s: next_states) {
+      size_t u = fs.ID();
+      size_t v = next_s.ID();
+      g.AddLink(u,v);
+    }
+  }
+  return g;
+}
+

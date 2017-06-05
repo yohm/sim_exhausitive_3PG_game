@@ -164,6 +164,19 @@ void test_PowerMethod() {
   std::cout << std::get<0>(fs) << ' ' << std::get<1>(fs) << ' ' << std::get<2>(fs) << std::endl;
 }
 
+void test_Graph() {
+  std::cout << "testing Graph" << std::endl;
+
+  const std::array<Action,40> acts = {
+      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C
+  };
+  Strategy s(acts);
+  Graph g = s.TransitionGraph();
+  std::cout << g;
+}
+
 int main() {
   std::cout << "Hello, World!" << std::endl;
 

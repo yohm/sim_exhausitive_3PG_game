@@ -6,6 +6,7 @@
 #include <array>
 #include <sstream>
 #include <cstdint>
+#include "Graph.hpp"
 
 #ifndef STEP3_STRATEGY_HPP
 #define STEP3_STRATEGY_HPP
@@ -132,6 +133,7 @@ public:
     return oss.str();
   }
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
+  Graph TransitionGraph() const;
 
 private:
   void ConstructFullActions();
