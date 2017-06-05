@@ -7,8 +7,8 @@ set(SOURCE_FILES strategy.cpp strategy.hpp Game.cpp Game.hpp Graph.cpp Graph.hpp
 find_package(MPI)
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
-add_executable(runTest test.cpp ${SOURCE_FILES})
-add_executable(graphTest graph_test.cpp Graph.cpp Graph.hpp)
+add_executable(strategyTest StrategyTest.cpp ${SOURCE_FILES})
+add_executable(graphTest GraphTest.cpp Graph.cpp Graph.hpp)
 add_executable(filterEfficiency main.cpp ${SOURCE_FILES})
 add_executable(mpi_main mpi_main.cpp ${SOURCE_FILES})
 target_link_libraries(mpi_main ${MPI_LIBRARIES})
