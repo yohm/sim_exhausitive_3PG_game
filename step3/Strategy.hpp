@@ -72,6 +72,8 @@ public:
     return count;
   }
 
+  FullState NextState(Action act_a, Action act_b, Action act_c) const;
+
   std::string toString() const {
     std::ostringstream oss;
     oss << A2C(a_2) << A2C(a_1)
@@ -137,7 +139,7 @@ public:
 
 private:
   void ConstructFullActions();
-
+  void NextPossibleFullStates( FullState current, std::vector<FullState>& next_states) const;
 };
 
 #endif //STRATEGY_HPP

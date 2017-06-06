@@ -55,11 +55,27 @@ void test_Strategy() {
   std::cout << "strategy2:" << str2.toString() << std::endl;
 }
 
+void test_TransitionGraph() {
+  const std::array<Action,40> acts = {
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D
+  };
+
+  Strategy str(acts);
+  Graph g = str.TransitionGraph();
+  std::cout << g;
+}
+
 int main() {
   std::cout << "Testing Strategy class" << std::endl;
 
   test_State();
   test_Strategy();
+
+  test_TransitionGraph();
 
   return 0;
 }

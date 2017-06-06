@@ -95,7 +95,7 @@ Graph Strategy::TransitionGraph() const {
   for( size_t i=0; i<64; i++) {
     FullState fs(i);
     std::vector<FullState> next_states;
-    //NextPossibleFullStates(next_states);
+    NextPossibleFullStates( fs, next_states);
     for( auto next_s: next_states) {
       size_t u = fs.ID();
       size_t v = next_s.ID();
@@ -103,5 +103,17 @@ Graph Strategy::TransitionGraph() const {
     }
   }
   return g;
+}
+
+void Strategy::NextPossibleFullStates(FullState current, std::vector<FullState> &next_states) const {
+  Action act_a = ActionAt(current);
+  next_states.push_back( current.NextState(act_a,C,C) );
+  next_states.push_back( current.NextState(act_a,C,D) );
+  next_states.push_back( current.NextState(act_a,D,C) );
+  next_states.push_back( current.NextState(act_a,D,D) );
+}
+
+FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
+  return FullState(a_1, act_a, b_1, act_b, b_2, act_c);
 }
 
