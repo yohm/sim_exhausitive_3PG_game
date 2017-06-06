@@ -6,6 +6,7 @@
 #include <array>
 #include <sstream>
 #include <cstdint>
+#include <ostream>
 #include "Graph.hpp"
 
 #ifndef STRATEGY_HPP
@@ -27,14 +28,11 @@ public:
   const Action a_2, a_1;
   const int8_t bc_2, bc_1;
 
-  std::string toString() const {
-    std::ostringstream oss;
-    oss << A2C(a_2) << A2C(a_1) << (int)bc_2 << (int)bc_1;
-    return oss.str();
-  }
   bool operator==(const ShortState & rhs) const {
     return (a_2==rhs.a_2 && a_1==rhs.a_1 && bc_2==rhs.bc_2 && bc_1==rhs.bc_1);
   }
+
+  friend std::ostream &operator<<(std::ostream &os, const ShortState &state);
 
   static const Action A_STATES[4][2];
   static const int8_t BC_STATES[10][2];
@@ -72,15 +70,9 @@ public:
     return count;
   }
 
-  FullState NextState(Action act_a, Action act_b, Action act_c) const;
+  friend std::ostream &operator<<(std::ostream &os, const FullState &state);
 
-  std::string toString() const {
-    std::ostringstream oss;
-    oss << A2C(a_2) << A2C(a_1)
-        << A2C(b_2) << A2C(b_1)
-        << A2C(c_2) << A2C(c_1);
-    return oss.str();
-  }
+  FullState NextState(Action act_a, Action act_b, Action act_c) const;
 
   int RelativePayoff() const {
     // returns -2,-1,0,1,2 if the state is very risky, risky, neutral, exploitable, very exploitable
@@ -130,28 +122,15 @@ class Strategy {
 public:
   Strategy( std::array<Action,40> acts ); // construct a strategy from a list of actions
   Strategy( const char acts[40] );
-  ~Strategy() {};
   std::array<Action,40> actions;
   std::array<Action,64> fullActions;
 
-  std::string toString() const {
-    std::ostringstream oss;
-    for( Action a : actions ) {
-      oss << A2C(a);
-    }
-    return oss.str();
-  }
-  std::string toFullString() const {
-    std::ostringstream oss;
-    for( Action a : fullActions ) {
-      oss << A2C(a);
-    }
-    return oss.str();
-  }
+  friend std::ostream &operator<<(std::ostream &os, const Strategy &strategy);
+
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
   Graph TransitionGraph() const;
   Graph TransitionGraphWithoutPositiveStates() const;
-
+  std::string ToDot() const; // dump in dot format
 private:
   void ConstructFullActions();
   void NextPossibleFullStates( FullState current, std::vector<FullState>& next_states) const;

@@ -10,6 +10,11 @@ char A2C( Action act ) {
   return act == C ? 'c' : 'd';
 }
 
+std::ostream &operator<<(std::ostream &os, const Action &act) {
+  os << A2C(act);
+  return os;
+}
+
 const Action ShortState::A_STATES[4][2] = {
       {C,C},
       {C,D},
@@ -132,5 +137,15 @@ Graph Strategy::TransitionGraphWithoutPositiveStates() const {
 
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
   return FullState(a_1, act_a, b_1, act_b, b_2, act_c);
+}
+
+std::ostream &operator<<(std::ostream &os, const FullState &state) {
+  os << state.ID() << '_' << state.a_2 << state.a_1 << state.b_2 << state.b_1 << state.c_2 << state.c_1 << std::endl;
+  return os;
+}
+
+std::ostream &operator<<(std::ostream &os, const ShortState &state) {
+  os << state.ID() << '_' << state.a_2 << state.a_1 << (int)state.bc_2 << (int)state.bc_1 << std::endl;
+  return os;
 }
 
