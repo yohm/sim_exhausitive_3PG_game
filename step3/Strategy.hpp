@@ -82,6 +82,20 @@ public:
     return oss.str();
   }
 
+  int RelativePayoff() const {
+    // returns -2,-1,0,1,2 if the state is very risky, risky, neutral, exploitable, very exploitable
+    if( a_1 == C ) {
+      if( b_1 == C && c_1 == C ) { return 0; }  // CCC
+      else if( b_1 == D && c_1 == D ) { return -2; }  // CDD
+      else { return -1; }  // CCD or CDC
+    }
+    else {
+      if( b_1 == C && c_1 == C ) { return 2; }  // DCC
+      else if( b_1 == D && c_1 == D ) { return 0; }  // DDD
+      else { return 1; }  // DCD or DDC
+    }
+  }
+
   FullState FromB() const { return FullState(b_2, b_1, a_2, a_1, c_2, c_1); } // full state from B's viewpoint
   FullState FromC() const { return FullState(c_2, c_1, a_2, a_1, b_2, b_1); } // full state from C's viewpoint
   ShortState ToShortState() const {
@@ -136,6 +150,7 @@ public:
   }
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
   Graph TransitionGraph() const;
+  Graph TransitionGraphWithoutPositiveStates() const;
 
 private:
   void ConstructFullActions();

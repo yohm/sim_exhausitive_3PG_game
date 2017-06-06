@@ -113,6 +113,23 @@ void Strategy::NextPossibleFullStates(FullState current, std::vector<FullState> 
   next_states.push_back( current.NextState(act_a,D,D) );
 }
 
+Graph Strategy::TransitionGraphWithoutPositiveStates() const {
+  Graph g(64);
+  for( size_t i=0; i<64; i++) {
+    FullState fs(i);
+    if( fs.RelativePayoff() > 0 ) { continue; }
+    std::vector<FullState> next_states;
+    NextPossibleFullStates( fs, next_states);
+    for( auto next_s: next_states) {
+      if( next_s.RelativePayoff() > 0 ) { continue; }
+      size_t u = fs.ID();
+      size_t v = next_s.ID();
+      g.AddLink(u,v);
+    }
+  }
+  return std::move(g);
+}
+
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
   return FullState(a_1, act_a, b_1, act_b, b_2, act_c);
 }

@@ -67,6 +67,9 @@ void test_TransitionGraph() {
   Strategy str(acts);
   Graph g = str.TransitionGraph();
   std::cout << g;
+
+  Graph g2 = str.TransitionGraphWithoutPositiveStates();
+  std::cout << g2;
 }
 
 int main() {
