@@ -135,17 +135,65 @@ Graph Strategy::TransitionGraphWithoutPositiveStates() const {
   return std::move(g);
 }
 
+std::ostream &operator<<(std::ostream &os, const Strategy &strategy) {
+  os << "actions: ";
+  for( auto a : strategy.actions ) {
+    os << a;
+  }
+  os << "\n";
+  os << "fullActions: ";
+  for( auto a : strategy.fullActions ) {
+    os << a;
+  }
+
+  return os;
+}
+
+std::string Strategy::ToDot() const {
+  std::stringstream ss;
+  ss << "digraph \n\n {\n";
+  for( int i=0; i<64; i++) {
+    FullState fs(i);
+    int p = fs.RelativePayoff();
+    std::string color;
+    if( p == 2 ) {
+      color = "blue";
+    }
+    else if( p == 1 ) {
+      color = "lightblue";
+    }
+    else if( p == 0 ) {
+      color = "black";
+    }
+    else if( p == -1 ) {
+      color = "orange";
+    }
+    else if( p == -2 ) {
+      color = "red";
+    }
+    ss << "  " << i << " [ label=\"" << fs << "\"; fontcolor = " << color << " ];\n";
+  }
+  Graph g = TransitionGraph();
+  auto printLink = [&ss](long from, long to) {
+    ss << "  " << from << " -> " << to << ";\n";
+  };
+  g.ForEachLink(printLink);
+  ss << "}\n";
+
+  return ss.str();
+}
+
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
   return FullState(a_1, act_a, b_1, act_b, b_2, act_c);
 }
 
 std::ostream &operator<<(std::ostream &os, const FullState &state) {
-  os << state.ID() << '_' << state.a_2 << state.a_1 << state.b_2 << state.b_1 << state.c_2 << state.c_1 << std::endl;
+  os << state.ID() << '_' << state.a_2 << state.a_1 << state.b_2 << state.b_1 << state.c_2 << state.c_1;
   return os;
 }
 
 std::ostream &operator<<(std::ostream &os, const ShortState &state) {
-  os << state.ID() << '_' << state.a_2 << state.a_1 << (int)state.bc_2 << (int)state.bc_1 << std::endl;
+  os << state.ID() << '_' << state.a_2 << state.a_1 << (int)state.bc_2 << (int)state.bc_1;
   return os;
 }
 

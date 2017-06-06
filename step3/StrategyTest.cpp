@@ -4,22 +4,24 @@
 void test_State() {
   ShortState s( C, D, 1, -1);
   std::cout << "state: " << s;
-  std::cout << "  id: " << s.ID() << std::endl;
-  std::cout << "restored_from_id: " << ShortState::ALL_STATES[ s.ID() ];
+  std::cout << "  id: " << s.ID();
+  std::cout << "  restored_from_id: " << ShortState::ALL_STATES[ s.ID() ];
+  std::cout << std::endl;
 
   FullState fs(C,D,D,D,C,C);
   std::cout << "fullState: " << fs;
   std::cout << "  toShort: " << fs.ToShortState();
-  std::cout << "  id: " << fs.ID() << std::endl;
-  std::cout << "restored_from_id: " << FullState(fs.ID());
+  std::cout << "  id: " << fs.ID();
+  std::cout << "  restored_from_id: " << FullState(fs.ID());
+  std::cout << std::endl;
   std::cout << "from B: " << fs.FromB();
   std::cout << "  toShortFromB: " << fs.FromB().ToShortState();
-  std::cout << "  id: " << fs.FromB().ID() << std::endl;
+  std::cout << "  id: " << fs.FromB().ID();
+  std::cout << std::endl;
   std::cout << "from C: " << fs.FromC();
   std::cout << "  toShortFromC: " << fs.FromC().ToShortState();
-  std::cout << "  id: " << fs.FromC().ID() << std::endl;
-  std::cout << "restored_from_id: " << FullState(fs.FromC().ID());
-
+  std::cout << "  id: " << fs.FromC().ID();
+  std::cout << std::endl;
 
   std::cout << "NumDiff 0=" << fs.NumDiffInT1(fs) << std::endl;
   FullState fs2(C,D,D,C,C,C);
@@ -68,6 +70,8 @@ void test_TransitionGraph() {
 
   Graph g2 = str.TransitionGraphWithoutPositiveStates();
   std::cout << g2;
+
+  std::cout << str.ToDot();
 }
 
 int main() {

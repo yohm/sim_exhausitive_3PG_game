@@ -18,11 +18,11 @@ public:
 
   void AddLink(long from, long to);
   friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
-
   void SCCs(components_t& components) const {
     ComponentFinder cf(*this);
     cf.SCCs(components);
   }
+  void ForEachLink( const std::function<void(long,long)>& f) const;
 
 private:
   const size_t m_num_nodes;

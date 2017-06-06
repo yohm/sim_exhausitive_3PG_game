@@ -23,6 +23,14 @@ std::ostream &operator<<(std::ostream &os, const Graph &graph) {
   return os;
 }
 
+void Graph::ForEachLink(const std::function<void(long, long)> &f) const {
+  for( long i=0; i<m_num_nodes; i++) {
+    for( long j: m_links[i]) {
+      f(i,j);
+    }
+  }
+}
+
 Graph::ComponentFinder::ComponentFinder(const Graph &m_g) : m_g(m_g) {
   size_t n = m_g.m_num_nodes;
   m_t = 0;
