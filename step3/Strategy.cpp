@@ -102,7 +102,7 @@ Graph Strategy::TransitionGraph() const {
       g.AddLink(u,v);
     }
   }
-  return g;
+  return std::move(g);
 }
 
 void Strategy::NextPossibleFullStates(FullState current, std::vector<FullState> &next_states) const {

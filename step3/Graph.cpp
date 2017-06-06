@@ -1,5 +1,5 @@
 //
-// Created by Yohsuke Muraes on 2017/06/05.
+// Created by Yohsuke Murase on 2017/06/05.
 //
 
 #include "Graph.hpp"

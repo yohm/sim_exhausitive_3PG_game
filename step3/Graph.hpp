@@ -15,7 +15,6 @@ typedef std::vector< std::vector<long> > components_t;
 class Graph {
 public:
   Graph(size_t num_nodes);
-  virtual ~Graph() {};
 
   void AddLink(long from, long to);
   friend std::ostream &operator<<(std::ostream &os, const Graph &graph);
