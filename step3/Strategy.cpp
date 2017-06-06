@@ -151,7 +151,7 @@ std::ostream &operator<<(std::ostream &os, const Strategy &strategy) {
 
 std::string Strategy::ToDot() const {
   std::stringstream ss;
-  ss << "digraph \n\n {\n";
+  ss << "digraph \"\" {\n";
   for( int i=0; i<64; i++) {
     FullState fs(i);
     int p = fs.RelativePayoff();

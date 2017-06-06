@@ -114,7 +114,8 @@ class Strategy:
             elif risk == 2:
                 color = "blue"
             f.write("  %d [ label=\"%d_%s\"; fontcolor = %s ];\n" % (n,n,s,color) )
-        for o,d in g.edges():
+        for o,d in sorted( g.edges(), key=lambda e: e[0] ):
+        #for o,d in g.edges():
             f.write("  %d -> %d;\n" % (o,d) )
         f.write("}\n")
         f.close()
