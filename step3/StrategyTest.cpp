@@ -74,6 +74,32 @@ void test_TransitionGraph() {
   std::cout << str.ToDot();
 }
 
+void test_Defensible1() {
+  std::cout << "test_Defensible1" << std::endl;
+
+  const std::array<Action,40> acts = {
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D,
+      C,C,C,C,D,D,D,D
+  };
+  Strategy str(acts);
+  std::cout << str << std::endl;
+  std::cout << "  is defensible?" << str.IsDefensible1() << std::endl;
+
+  const std::array<Action,40> actsD = {
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D
+  };
+  Strategy allD(actsD);
+  std::cout << allD << std::endl;
+  std::cout << "  is defensible?" << allD.IsDefensible1() << std::endl;
+}
+
 int main() {
   std::cout << "Testing Strategy class" << std::endl;
 
@@ -81,6 +107,7 @@ int main() {
   test_Strategy();
 
   test_TransitionGraph();
+  test_Defensible1();
 
   return 0;
 }

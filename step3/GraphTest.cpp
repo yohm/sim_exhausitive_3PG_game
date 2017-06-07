@@ -82,6 +82,21 @@ void test_g5() {
   PrintComponents(components);
 }
 
+void test_transitionNodes1() {
+  Graph g1(5);
+  g1.AddLink(1, 0);
+  g1.AddLink(0, 2);
+  g1.AddLink(2, 1);
+  g1.AddLink(0, 3);
+  g1.AddLink(3, 3);
+  g1.AddLink(3, 4);
+  std::cout << "transition nodes in g1':" << std::endl;
+  for( auto n: g1.TransitionNodes() ) {
+    std::cout << n << ' ';
+  }
+  std::cout << std::endl;
+}
+
 int main( int argc, char* argv[]) {
   Graph g(5);
   g.AddLink(1,0);
@@ -105,4 +120,5 @@ int main( int argc, char* argv[]) {
   test_g3();
   test_g4();
   test_g5();
+  test_transitionNodes1();
 }

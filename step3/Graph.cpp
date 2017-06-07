@@ -2,6 +2,7 @@
 // Created by Yohsuke Murase on 2017/06/05.
 //
 
+#include <set>
 #include "Graph.hpp"
 
 Graph::Graph(size_t num_nodes) : m_num_nodes(num_nodes) {
@@ -29,6 +30,21 @@ void Graph::ForEachLink(const std::function<void(long, long)> &f) const {
       f(i,j);
     }
   }
+}
+
+std::set<long> Graph::TransitionNodes() const {
+  std::set<long> transition_nodes;
+
+  components_t components;
+  SCCs(components);
+  for( const std::vector<long>& component: components) {
+    if( component.size() == 1 ) {
+      long n = component[0];
+      if( !HasSelfLoop(n) ) { transition_nodes.insert(n); }
+    }
+  }
+
+  return std::move(transition_nodes);
 }
 
 Graph::ComponentFinder::ComponentFinder(const Graph &m_g) : m_g(m_g) {
@@ -78,5 +94,15 @@ void Graph::ComponentFinder::StrongConnect(long v, components_t &components) {
     }
     components.push_back(comp);
   }
+}
+
+bool Graph::HasSelfLoop(long n) const {
+  bool b = false;
+  for( long j: m_links[n]) {
+    if( j == n ) {
+      b = true;
+    }
+  }
+  return b;
 }
 

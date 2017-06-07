@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <stack>
+#include <set>
 
 typedef std::vector< std::vector<long> > components_t;
 
@@ -22,11 +23,13 @@ public:
     ComponentFinder cf(*this);
     cf.SCCs(components);
   }
+  std::set<long> TransitionNodes() const;
   void ForEachLink( const std::function<void(long,long)>& f) const;
 
 private:
   const size_t m_num_nodes;
   std::vector<std::vector<long> > m_links;
+  bool HasSelfLoop(long n) const; // return true if node n has a self-loop
 
   class ComponentFinder {
   public:
@@ -41,6 +44,7 @@ private:
     std::vector<bool> on_stack;
 
     void StrongConnect( long v, components_t& components);
+
   };
 };
 

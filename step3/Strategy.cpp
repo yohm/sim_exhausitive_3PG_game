@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <set>
 #include "Strategy.hpp"
 
 
@@ -181,6 +182,28 @@ std::string Strategy::ToDot() const {
   ss << "}\n";
 
   return ss.str();
+}
+
+std::string Strategy::ToString() const {
+  std::ostringstream oss;
+  for( auto act : actions) {
+    oss << act;
+  }
+  return oss.str();
+}
+
+bool Strategy::IsDefensible1() const {
+  const std::set<long> RiskyNodeIDs = {
+      1,3,4,5,6,7,9,11,
+      12,13,14,15,33,35,36,37,
+      38,39,41,43,44,45,46,47
+  };
+  Graph g = TransitionGraphWithoutPositiveStates();
+  std::set<long> nodes = g.TransitionNodes();
+  if( nodes.size() < 24 ) { return false; }
+  std::set<long> diff;
+  std::set_difference( RiskyNodeIDs.begin(), RiskyNodeIDs.end(), nodes.begin(), nodes.end(), std::inserter(diff,diff.end()) );
+  return diff.size() == 0;
 }
 
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {

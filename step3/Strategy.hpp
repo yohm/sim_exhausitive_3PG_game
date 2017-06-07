@@ -125,9 +125,11 @@ public:
   std::array<Action,40> actions;
   std::array<Action,64> fullActions;
 
+  std::string ToString() const;
   friend std::ostream &operator<<(std::ostream &os, const Strategy &strategy);
 
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
+  bool IsDefensible1() const;
   Graph TransitionGraph() const;
   Graph TransitionGraphWithoutPositiveStates() const;
   std::string ToDot() const; // dump in dot format

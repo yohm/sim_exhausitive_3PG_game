@@ -10,6 +10,10 @@ include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 add_executable(strategyTest StrategyTest.cpp ${SOURCE_FILES})
 add_executable(graphTest GraphTest.cpp Graph.cpp Graph.hpp)
 add_executable(gameTest GameTest.cpp ${SOURCE_FILES})
+
+add_executable(main_defense1 main_defense1.cpp ${SOURCE_FILES})
+target_link_libraries(main_defense1 ${MPI_LIBRARIES})
+
 add_executable(main main.cpp ${SOURCE_FILES})
 add_executable(mpi_main mpi_main.cpp ${SOURCE_FILES})
 target_link_libraries(mpi_main ${MPI_LIBRARIES})

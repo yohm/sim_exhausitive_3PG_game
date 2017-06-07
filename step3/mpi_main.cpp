@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
     //std::cout << str.toString() << std::endl;
     //std::cout << str.toFullString() << std::endl;
     if( IsEfficient(str, e, th) ) {
-      fout << str.toString() << std::endl;
+      fout << str.ToString() << std::endl;
       filtered_count++;
     }
     count++;
