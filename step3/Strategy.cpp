@@ -184,7 +184,7 @@ std::string Strategy::ToDot() const {
 }
 
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
-  return FullState(a_1, act_a, b_1, act_b, b_2, act_c);
+  return FullState(a_1, act_a, b_1, act_b, c_1, act_c);
 }
 
 std::ostream &operator<<(std::ostream &os, const FullState &state) {

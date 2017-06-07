@@ -99,7 +99,7 @@ class Strategy:
         f.write("digraph \"\" {\n")
         if g == None:
             g = self.transition_graph()
-        for n in g.nodes():
+        for n in sorted(g.nodes()):
             stat = ALL_FULL_STATES[n]
             s = full_state_to_str(stat)
             risk = full_state_to_risk(stat)
