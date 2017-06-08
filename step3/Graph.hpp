@@ -10,6 +10,7 @@
 #include <map>
 #include <stack>
 #include <set>
+#include <functional>
 
 typedef std::vector< std::vector<long> > components_t;
 
@@ -24,7 +25,14 @@ public:
     cf.SCCs(components);
   }
   std::set<long> TransitionNodes() const;
-  void ForEachLink( const std::function<void(long,long)>& f) const;
+  template <class T>
+  void ForEachLink( const T& f) const {
+    for( long i=0; i<m_num_nodes; i++) {
+      for( long j: m_links[i]) {
+        f(i,j);
+      }
+    }
+  }
 
 private:
   const size_t m_num_nodes;

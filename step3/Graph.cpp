@@ -24,14 +24,6 @@ std::ostream &operator<<(std::ostream &os, const Graph &graph) {
   return os;
 }
 
-void Graph::ForEachLink(const std::function<void(long, long)> &f) const {
-  for( long i=0; i<m_num_nodes; i++) {
-    for( long j: m_links[i]) {
-      f(i,j);
-    }
-  }
-}
-
 std::set<long> Graph::TransitionNodes() const {
   std::set<long> transition_nodes;
 

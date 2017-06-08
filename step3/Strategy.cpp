@@ -193,11 +193,13 @@ std::string Strategy::ToString() const {
 }
 
 bool Strategy::IsDefensible1() const {
-  const std::set<long> RiskyNodeIDs = {
+  long a[24] = {
       1,3,4,5,6,7,9,11,
       12,13,14,15,33,35,36,37,
       38,39,41,43,44,45,46,47
   };
+
+  const std::set<long> RiskyNodeIDs(a,a+24);
   Graph g = TransitionGraphWithoutPositiveStates();
   std::set<long> nodes = g.TransitionNodes();
   if( nodes.size() < 24 ) { return false; }

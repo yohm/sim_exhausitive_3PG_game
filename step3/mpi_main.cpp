@@ -2,12 +2,11 @@
 #include <fstream>
 #include <string>
 #include "mpi.h"
-#include "strategy.hpp"
+#include "Strategy.hpp"
 #include "Game.hpp"
 
 bool IsEfficient(const Strategy& str, double e, double th) {
   Game g(str, str, str);
-  umatrix_t m;
 
   //double e = 0.01;
   const double r = 2.0;
