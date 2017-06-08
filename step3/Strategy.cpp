@@ -210,8 +210,8 @@ bool Strategy::IsDefensible1() const {
 
 bool Strategy::IsDefensible() const {
 
-  int_matrix_t A_b ; // relative payoff matrix. A_ij = payoff_{Bob} - payoff_{Alice}
-  int_matrix_t A_c; // relative payoff matrix. A_ij = payoff_{Charlie} - payoff_{Alice}
+  int_matrix_t A_b = {{0}}; // relative payoff matrix. A_ij = payoff_{Bob} - payoff_{Alice}
+  int_matrix_t A_c = {{0}}; // relative payoff matrix. A_ij = payoff_{Charlie} - payoff_{Alice}
   int_matrix_t A1_b, A1_c;
   ConstructA1Matrix(A1_b, A1_c);
   for( size_t i=0; i<64; i++) {
