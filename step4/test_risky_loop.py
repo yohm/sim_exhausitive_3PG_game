@@ -1,37 +1,6 @@
 import strategy
 import networkx as nx
 
-#def _has_risky_loop_in_component(g,component):
-#    if len(component) > 1:
-#        states = [ strategy.ALL_FULL_STATES[n] for n in component ]
-#        risks = [ strategy.full_state_to_risk(s) for s in states ]
-#        if any( r < 0 for r in risks ):
-#            return True
-#        else:
-#            return False
-#    else:
-#        n = list(component)[0]
-#        stat = strategy.ALL_FULL_STATES[n]
-#        if strategy.full_state_to_risk(stat) >= 0:
-#            return False
-#        for org,dst in g.edges([n]):
-#            if org == dst:  # risky self loop
-#                return True
-#        return False
-#
-#def has_risky_SSC(stra):
-#    g = stra.transition_graph()
-#    good_nodes = [ strategy.full_state_to_index(s) for s in strategy.ALL_FULL_STATES if strategy.full_state_to_risk(s) > 0 ]
-#    print( good_nodes )
-#    g.remove_nodes_from(good_nodes)
-#    print( sorted(list(g.nodes())) )
-#
-#    for component in nx.strongly_connected_components(g):
-#        if _has_risky_loop_in_component(g, component):
-#            print(component)
-#            return True
-#    return False
-
 if __name__ == '__main__':
     import sys
     def main():
