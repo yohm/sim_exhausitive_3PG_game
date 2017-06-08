@@ -24,7 +24,7 @@ module DefensibleAllD
       SUB_STATES << a+b
     end
   end
-  $stderr.puts "SUB_STATES : ", SUB_STATES.inspect
+  #$stderr.puts "SUB_STATES : ", SUB_STATES.inspect
 
   FIXED_STRATEGY = {
       [:d,:d,2, 2] => :d,
@@ -53,7 +53,7 @@ module DefensibleAllD
       copy2.each {|strategy| strategy[state] = :d }
       strategy_candidates = copy1 + copy2
     end
-    $stderr.puts strategy_candidates.size
+    #$stderr.puts strategy_candidates.size
     strategy_candidates
   end
 
@@ -116,6 +116,7 @@ def strategy_to_bits( strategy )
 end
 
 defensible_strategies = DefensibleAllD.defensible_strategies
+=begin
 pp "# defensible : #{defensible_strategies.count}"
 
 pp "possible actions for states: ", DefensibleAllD::UNFIXED_STATES
@@ -127,6 +128,7 @@ pp defensible_strategies.map {|str|
 }
 
 pp "bits"
+=end
 defensible_strategies.each do |str|
   puts strategy_to_bits(str)
 end
