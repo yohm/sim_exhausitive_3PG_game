@@ -36,7 +36,7 @@ module DefensibleAllD
       [:c,:c,2, 2] => :d,
       [:c,:c,1,-1] => :d,
       #[:c,:c,0, 0] => :c,
-      #[:c,:c,1, 1] => :d,
+      [:c,:c,1, 1] => :d  # defensibility against (11)
       #[:c,:d,1, 2] => :d,
       #[:c,:d,2, 1] => :d
   }
@@ -98,12 +98,14 @@ module DefensibleAllD
       g = construct_transition_graph(str)
       risky_state = g.non_transient_nodes.find do |n|
         s = SUB_STATES[n]
-        !(s[0] == :d and s[1] == :d)
+        #!(s[0] == :d and s[1] == :d)
+        s[1] == :c
       end
       #pp "risky_state : #{risky_state}"
       is_defensible = risky_state.nil?
       strategies << str if is_defensible
     end
+    strategies
   end
 end
 
@@ -128,3 +130,4 @@ pp "bits"
 defensible_strategies.each do |str|
   puts strategy_to_bits(str)
 end
+
