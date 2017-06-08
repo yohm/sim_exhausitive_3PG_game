@@ -208,6 +208,42 @@ bool Strategy::IsDefensible1() const {
   return diff.size() == 0;
 }
 
+bool Strategy::IsDefensible() const {
+
+  int_matrix_t A_b ; // relative payoff matrix. A_ij = payoff_{Bob} - payoff_{Alice}
+  int_matrix_t A_c; // relative payoff matrix. A_ij = payoff_{Charlie} - payoff_{Alice}
+  int_matrix_t A1_b, A1_c;
+  ConstructA1Matrix(A1_b, A1_c);
+  for( size_t i=0; i<64; i++) {
+    UpdateAMatrix(A_b, A1_b);
+    if( HasNegativeDiagonal(A_b) ) { return false; }
+    UpdateAMatrix(A_c, A1_c);
+    if( HasNegativeDiagonal(A_c) ) { return false; }
+  }
+  return true;
+}
+
+void Strategy::ConstructA1Matrix(Strategy::int_matrix_t &A1_b, Strategy::int_matrix_t &A1_c) const {
+  const int INFINITE = 10;
+  for( size_t i=0; i<64; i++) {
+    FullState state_i(i);
+    for( size_t j=0; j<64; j++) { // initialize with a large payoff
+      A1_b[i][j] = INFINITE;
+      A1_c[i][j] = INFINITE;
+    }
+    std::vector<FullState> next_states;
+    NextPossibleFullStates(state_i, next_states);
+    for( auto ns: next_states) {
+      size_t j = ns.ID();
+      int payoff_against_b = ns.RelativePayoffAgainst(true);
+      int payoff_against_c = ns.RelativePayoffAgainst(false);
+      A1_b[i][j] = payoff_against_b;
+      A1_c[i][j] = payoff_against_c;
+    }
+  }
+
+}
+
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
   return FullState(a_1, act_a, b_1, act_b, c_1, act_c);
 }

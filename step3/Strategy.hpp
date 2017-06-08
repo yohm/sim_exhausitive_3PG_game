@@ -88,6 +88,19 @@ public:
     }
   }
 
+  int RelativePayoffAgainst(bool BorC) const {
+    if( BorC ) { // returns relative payoff against B
+      if( a_1 == C && b_1 == D ) { return -1; }
+      else if( a_1 == D && b_1 == C ) { return 1; }
+      else { return 0; }
+    }
+    else {
+      if( a_1 == C && c_1 == D ) { return -1; }
+      else if( a_1 == D && c_1 == C ) { return 1; }
+      else { return 0; }
+    }
+  }
+
   FullState FromB() const { return FullState(b_2, b_1, a_2, a_1, c_2, c_1); } // full state from B's viewpoint
   FullState FromC() const { return FullState(c_2, c_1, a_2, a_1, b_2, b_1); } // full state from C's viewpoint
   ShortState ToShortState() const {
@@ -118,6 +131,7 @@ public:
   }
 };
 
+
 class Strategy {
 public:
   Strategy( std::array<Action,40> acts ); // construct a strategy from a list of actions
@@ -129,13 +143,18 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Strategy &strategy);
 
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
-  bool IsDefensible1() const;
+  bool IsDefensible1() const; // check a necessary condition for defensibility using graph topology
+  bool IsDefensible() const; // check necessary sufficient condition for defensibility
   Graph TransitionGraph() const;
   Graph TransitionGraphWithoutPositiveStates() const;
   std::string ToDot() const; // dump in dot format
 private:
   void ConstructFullActions();
   void NextPossibleFullStates( FullState current, std::vector<FullState>& next_states) const;
+  typedef std::array<std::array<int,64>,64> int_matrix_t;
+  void ConstructA1Matrix( int_matrix_t& A1_b, int_matrix_t& A1_c ) const;
+  void UpdateAMatrix( int_matrix_t& A, const int_matrix_t& A1 ) const;
+  bool HasNegativeDiagonal( const int_matrix_t& A ) const;
 };
 
 #endif //STRATEGY_HPP
