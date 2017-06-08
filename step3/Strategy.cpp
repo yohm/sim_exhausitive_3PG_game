@@ -244,6 +244,35 @@ void Strategy::ConstructA1Matrix(Strategy::int_matrix_t &A1_b, Strategy::int_mat
 
 }
 
+void Strategy::UpdateAMatrix(Strategy::int_matrix_t &A, const Strategy::int_matrix_t &A1) const {
+  const int INFINITE = 10;
+
+  int_matrix_t temp;
+  for( int i=0; i<64; i++) {
+    for( int j=0; j<64; j++) {
+      temp[i][j] = INFINITE;
+      for( int k=0; k<64; k++) {
+        if( A[i][k] == INFINITE || A1[k][j] == INFINITE ) { continue; }
+        int aikj = A[i][k] + A1[k][j];
+        if( aikj < temp[i][j] ) { temp[i][j] = aikj; }
+      }
+    }
+  }
+
+  for( int i=0; i<64; i++) {
+    for (int j = 0; j < 64; j++) {
+      A[i][j] = temp[i][j];
+    }
+  }
+}
+
+bool Strategy::HasNegativeDiagonal(const Strategy::int_matrix_t &A) const {
+  for(int i=0; i<64; i++) {
+    if( A[i][i] < 0 ) { return true; }
+  }
+  return false;
+}
+
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {
   return FullState(a_1, act_a, b_1, act_b, c_1, act_c);
 }
