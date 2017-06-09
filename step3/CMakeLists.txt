@@ -18,5 +18,5 @@ add_executable(main_distinguishable main_distinguishable.cpp ${SOURCE_FILES})
 target_link_libraries(main_distinguishable ${MPI_LIBRARIES})
 
 add_executable(main main.cpp ${SOURCE_FILES})
-add_executable(mpi_main mpi_main.cpp ${SOURCE_FILES})
-target_link_libraries(mpi_main ${MPI_LIBRARIES})
+add_executable(main_efficiency main_efficiency.cpp ${SOURCE_FILES})
+target_link_libraries(main_efficiency ${MPI_LIBRARIES})
