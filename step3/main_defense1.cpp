@@ -39,8 +39,8 @@ int main(int argc, char** argv) {
       const Strategy str( line.c_str() );
       //std::cout << str.toString() << std::endl;
       //std::cout << str.toFullString() << std::endl;
-      if(str.IsDefensible1() ) {
-        fout << str << "\n";
+      if(str.IsDefensible() ) {
+        fout << str.ToString() << "\n";
         filtered_count++;
       }
       count++;
@@ -52,11 +52,11 @@ int main(int argc, char** argv) {
   else {
     assert( my_rank == 0 );
     const Strategy str( argv[1] );
-    if( str.IsDefensible1() ) {
-      std::cout << "no risky loop" << std::endl;
+    if( str.IsDefensible() ) {
+      std::cout << "defensible" << std::endl;
     }
     else {
-      std::cout << "risky loop was found" << std::endl;
+      std::cout << "not defensible" << std::endl;
     }
   }
 
