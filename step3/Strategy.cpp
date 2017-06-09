@@ -229,7 +229,7 @@ bool Strategy::IsDefensible() const {
 }
 
 void Strategy::ConstructA1Matrix(Strategy::int_matrix_t &A1_b, Strategy::int_matrix_t &A1_c) const {
-  const int INFINITE = 10;
+  const int INFINITE = 100;
   for( size_t i=0; i<64; i++) {
     FullState state_i(i);
     for( size_t j=0; j<64; j++) { // initialize with a large payoff
@@ -250,7 +250,7 @@ void Strategy::ConstructA1Matrix(Strategy::int_matrix_t &A1_b, Strategy::int_mat
 }
 
 void Strategy::UpdateAMatrix(Strategy::int_matrix_t &A, const Strategy::int_matrix_t &A1) const {
-  const int INFINITE = 10;
+  const int INFINITE = 100;
 
   int_matrix_t temp;
   for( int i=0; i<64; i++) {
