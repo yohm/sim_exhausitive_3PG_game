@@ -14,6 +14,9 @@ add_executable(gameTest GameTest.cpp ${SOURCE_FILES})
 add_executable(main_defense1 main_defense1.cpp ${SOURCE_FILES})
 target_link_libraries(main_defense1 ${MPI_LIBRARIES})
 
+add_executable(main_distinguishable main_distinguishable.cpp ${SOURCE_FILES})
+target_link_libraries(main_distinguishable ${MPI_LIBRARIES})
+
 add_executable(main main.cpp ${SOURCE_FILES})
 add_executable(mpi_main mpi_main.cpp ${SOURCE_FILES})
 target_link_libraries(mpi_main ${MPI_LIBRARIES})
