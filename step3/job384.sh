@@ -1,7 +1,7 @@
 #!/bin/sh
 #============ pjsub Options ============
 #PJM --rsc-list "node=384"
-#PJM --rsc-list "elapse=01:00:00"
+#PJM --rsc-list "elapse=05:00:00"
 #PJM --rsc-list "rscgrp=small"
 #PJM --mpi "proc=3072"
 #PJM --stg-transfiles all
@@ -15,5 +15,5 @@
 
 ulimit -s 8192
 
-mpiexec ./mpi_main.out
+mpiexec ./mpi_main.out 0.01 0.7
 
