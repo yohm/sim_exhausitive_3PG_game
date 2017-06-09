@@ -210,8 +210,8 @@ bool Strategy::IsDefensible1() const {
 
 bool Strategy::IsDefensible() const {
 
-  int_matrix_t A_b; // relative payoff matrix. A_ij = payoff_{Bob} - payoff_{Alice}
-  int_matrix_t A_c; // relative payoff matrix. A_ij = payoff_{Charlie} - payoff_{Alice}
+  int_matrix_t A_b; // relative payoff matrix. A_ij = payoff_{Alice} - payoff_{Bob}
+  int_matrix_t A_c; // relative payoff matrix. A_ij = payoff_{Alice} - payoff_{Charlie}
   int_matrix_t A1_b, A1_c;
   ConstructA1Matrix(A1_b, A1_c);
 
@@ -276,6 +276,16 @@ bool Strategy::HasNegativeDiagonal(const Strategy::int_matrix_t &A) const {
     if( A[i][i] < 0 ) { return true; }
   }
   return false;
+}
+
+bool Strategy::IsDistinguishable() const {
+  ShortState dc00(D,C,0,0);
+  ShortState dd00(D,D,0,0);
+  ShortState cc00(C,C,0,0);
+  if( ActionAt(dc00) == C && ActionAt(dd00) == C && ActionAt(cc00) == C ) {
+    return false;
+  }
+  return true;
 }
 
 FullState FullState::NextState(Action act_a, Action act_b, Action act_c) const {

@@ -126,6 +126,43 @@ void test_Defensible() {
   std::cout << "  is defensible?" << allD.IsDefensible() << std::endl;
 }
 
+void test_Distinguishable() {
+  std::cout << "test_Distinguishable" << std::endl;
+
+  const std::array<Action,40> acts = {
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C
+  };
+  Strategy allC(acts);
+  std::cout << allC << std::endl;
+  std::cout << "  is distinguishable? : " << allC.IsDistinguishable() << std::endl;
+
+  const std::array<Action,40> acts2 = {
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D,
+      D,D,D,D,D,D,D,D
+  };
+  Strategy allD(acts2);
+  std::cout << allD << std::endl;
+  std::cout << "  is distinguishable? : " << allD.IsDistinguishable() << std::endl;
+
+  const std::array<Action,40> acts3 = {
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,D,C,C,C,  // DC00=>D
+      C,C,C,C,C,C,C,C,
+      C,C,C,C,C,C,C,C
+  };
+  Strategy str(acts3);
+  std::cout << str << std::endl;
+  std::cout << "  is distinguishable? : " << str.IsDistinguishable() << std::endl;
+}
+
 int main() {
   std::cout << "Testing Strategy class" << std::endl;
 
@@ -135,6 +172,8 @@ int main() {
   test_TransitionGraph();
   test_Defensible1();
   test_Defensible();
+
+  test_Distinguishable();
 
   return 0;
 }

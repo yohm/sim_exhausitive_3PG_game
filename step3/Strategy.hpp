@@ -143,8 +143,10 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const Strategy &strategy);
 
   Action ActionAt( FullState fs ) const { return fullActions[fs.ID()]; }
+  Action ActionAt( ShortState s ) const { return actions[s.ID()]; }
   bool IsDefensible1() const; // check a necessary condition for defensibility using graph topology
   bool IsDefensible() const; // check necessary sufficient condition for defensibility
+  bool IsDistinguishable() const;
   Graph TransitionGraph() const;
   Graph TransitionGraphWithoutPositiveStates() const;
   std::string ToDot() const; // dump in dot format
