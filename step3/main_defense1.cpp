@@ -44,7 +44,9 @@ int main(int argc, char** argv) {
         filtered_count++;
       }
       count++;
-      if( count % 100000 == 0 ) { std::cerr << "count: " << count << " @rank: " << my_rank << std::endl; }
+#ifndef NDEBUG
+      if( count % 1000 == 0 ) { std::cerr << "count: " << count << " @rank: " << my_rank << std::endl; }
+#endif
     }
     std::cerr << filtered_count << " strategies are found out of " << count << " at rank " << my_rank << std::endl;
     fout.close();
