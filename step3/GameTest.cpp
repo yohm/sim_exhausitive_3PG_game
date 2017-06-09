@@ -19,15 +19,15 @@ void test_Game() {
   Game g(sa,sb,sc);
   FullState initC(C,C,C,C,C,C);
   FullState updated = g.Update( initC );
-  std::cout << "  updated from C: " << updated.toString() << std::endl;
+  std::cout << "  updated from C: " << updated << std::endl;
 
   FullState initD(D,D,D,D,D,D);
   FullState s = g.Update( initD );
-  std::cout << "  updated from D: " << s.toString() << std::endl;
+  std::cout << "  updated from D: " << s << std::endl;
 
   FullState init3(C,D,D,C,D,D);
   FullState s3= g.Update( init3 );
-  std::cout << "  updated from init3: " << s3.toString() << std::endl;
+  std::cout << "  updated from init3: " << s3 << std::endl;
 }
 
 void test_UMatrix() {

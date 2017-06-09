@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "strategy.hpp"
+#include "Strategy.hpp"
 #include "Game.hpp"
 
 double Payoff(const Strategy& str, double e) {
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
       //std::cout << str.toString() << std::endl;
       //std::cout << str.toFullString() << std::endl;
       if( IsEfficient(str,e,th) ) {
-        std::cout << str.toString() << std::endl;
+        std::cout << str.ToString() << std::endl;
       }
       count++;
       if( count % 1000 == 0 ) { std::cerr << "count: " << count << std::endl; }
