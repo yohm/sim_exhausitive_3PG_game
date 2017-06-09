@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     std::ofstream fout(out_filename);
 
     std::string line;
-    int count = 0, filtered_count = 0;
+    int count = 0;
     while( std::getline(fin,line) ) {
       const Strategy str( line.c_str() );
       double payoff = AveragePayoff(str, e);
