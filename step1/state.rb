@@ -64,6 +64,10 @@ class FullState
     [@a_2,@a_1,@b_2,@b_1,@c_2,@c_1]
   end
 
+  def to_s
+    to_a.join('')
+  end
+
   def to_id
     id = 0
     id += 32 if @a_2 == :d
