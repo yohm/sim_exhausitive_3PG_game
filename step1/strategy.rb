@@ -34,6 +34,101 @@ class Strategy
   def valid?
     @strategy.values.all? {|a| a == :c or a == :d }
   end
+
+  def possible_next_full_states(current_fs)
+    ss = current_fs.to_ss
+    act_a = action(ss)
+    n1 = current_fs.next_state(act_a,:c,:c)
+    n2 = current_fs.next_state(act_a,:c,:d)
+    n3 = current_fs.next_state(act_a,:d,:c)
+    n4 = current_fs.next_state(act_a,:d,:d)
+    [n1,n2,n3,n4]
+  end
+
+  def defensible?
+    a1_b, a1_c = AMatrix.construct_a1_matrix(self) # construct_a1_matrix
+    a_b, a_c = AMatrix.construct_a1_matrix(self)
+    return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
+
+    63.times do |t|
+      a_b.update( a1_b )
+      a_c.update( a1_c )
+      return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
+    end
+    true
+  end
+
+  class AMatrix  # class used for judging defensibility
+
+    N=64
+
+    def self.construct_a1_matrix(stra)
+      a_b = self.new
+      a_c = self.new
+
+      N.times do |i|
+        fs = FullState.make_from_id(i)
+        N.times do |j|
+          a_b.a[i][j] = :inf
+          a_c.a[i][j] = :inf
+        end
+        next_fss = stra.possible_next_full_states(fs)
+        next_fss.each do |ns|
+          j = ns.to_id
+          a_b.a[i][j] = ns.relative_payoff_against(:B)
+          a_c.a[i][j] = ns.relative_payoff_against(:C)
+        end
+      end
+      [a_b, a_c]
+    end
+
+    attr_reader :a
+
+    def initialize
+      @a = Array.new(64) {|i| Array.new(64,0) }
+    end
+
+    def inspect
+      sio = StringIO.new
+      @a.size.times do |i|
+        @a[i].size.times do |j|
+          if @a[i][j] == :inf
+            sio.print(" ##,")
+          else
+            sio.printf("%3d,", @a[i][j])
+          end
+        end
+        sio.print "\n"
+      end
+      sio.string
+    end
+
+    def has_negative_diagonal?
+      @a.size.times do |i|
+        if @a[i][i] != :inf and @a[i][i] < 0
+          return true
+        end
+      end
+      false
+    end
+
+    def update( a1 )
+      temp = Array.new(64) {|i| Array.new(64,:inf) }
+
+      @a.size.times do |i|
+        @a.size.times do |j|
+          @a.size.times do |k|
+            x = @a[i][k]
+            y = a1.a[k][j]
+            next if x == :inf or y == :inf
+            temp[i][j] = x+y if temp[i][j] == :inf or x+y < temp[i][j]
+          end
+        end
+      end
+      @a = temp
+    end
+  end
+
 end
 
 if __FILE__ == $0
@@ -41,6 +136,13 @@ if __FILE__ == $0
     bits = ARGV[0]
     stra = Strategy.make_from_bits(bits)
     stra.show_actions($stdout)
+    a1_b, a1_c = Strategy::AMatrix.construct_a1_matrix(stra)
+    pp a1_b
+    pp a1_b.has_negative_diagonal?
+    a1_b.update(a1_b)
+    pp a1_b
+    pp "def: #{stra.defensible?}"
+
     exit 0
   end
   bits = "ccccdddcdddccccddcdddccccddcddcccccddddd"
