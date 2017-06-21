@@ -3,8 +3,10 @@ require_relative 'state'
 
 class FullStateM3
 
+  NUM_STATES = 512
+
   def self.make_from_id( id )
-    raise "invalid arg: #{id}" if id < 0 or id > 511
+    raise "invalid arg: #{id}" if id < 0 or id >= NUM_STATES
     c_1 = ( ((id >> 0) & 1) == 1 ) ? :d : :c
     c_2 = ( ((id >> 1) & 1) == 1 ) ? :d : :c
     c_3 = ( ((id >> 2) & 1) == 1 ) ? :d : :c
