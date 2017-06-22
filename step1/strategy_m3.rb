@@ -1,5 +1,6 @@
 require 'pp'
 require_relative 'state_m3'
+require_relative 'strategy'
 
 class StrategyM3
 
@@ -30,6 +31,17 @@ class StrategyM3
     self.new( actions )
   end
 
+  def self.make_from_m2_strategy( m2_stra )
+    acts = []
+    FullStateM3::NUM_STATES.times do |i|
+      m3_stat = FullStateM3.make_from_id(i)
+      m2_stat = m3_stat.to_m2_states.last
+      act = m2_stra.action( m2_stat.to_ss )
+      acts << act
+    end
+    self.new(acts)
+  end
+
   def action( state_id )
     @actions[state_id]
   end
@@ -54,7 +66,6 @@ class StrategyM3
     return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
 
     FullStateM3::NUM_STATES.times do |t|
-      pp "t: #{t}"
       a_b.update( a1_b )
       a_c.update( a1_c )
       return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
@@ -150,10 +161,16 @@ if __FILE__ == $0
     exit 0
   end
 
-  bits = "cdcd" * 128
+  bits = "cddd" * 128
   strategy = StrategyM3.make_from_bits(bits)
   strategy.show_actions($stdout)
   pp strategy.valid?, strategy.defensible?
   raise "inconsistent bits" unless bits == strategy.to_bits
+
+  bits = "ccccdddcdddccccddcdddccccddcddcccccddddd"
+  m2_stra = Strategy.make_from_bits(bits)
+  m3_stra = StrategyM3.make_from_m2_strategy(m2_stra)
+  #m3_stra.show_actions($stdout)
+  puts m3_stra.to_bits
 end
 
