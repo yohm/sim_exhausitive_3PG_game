@@ -42,6 +42,18 @@ class StrategyM3
     self.new(acts)
   end
 
+  def modify_action( state, action )
+    if state.is_a?(String)
+      stat = FullStateM3.make_from_bits(state)
+      raise "action does not change: #{stat}" if @actions[stat.to_id] == action
+      @actions[stat.to_id] = action
+    elsif state.is_a?(FullStateM3)
+      @actions[state.to_id] = action
+    else
+      raise "invalid arg"
+    end
+  end
+
   def action( state_id )
     @actions[state_id]
   end
@@ -167,10 +179,32 @@ if __FILE__ == $0
   pp strategy.valid?, strategy.defensible?
   raise "inconsistent bits" unless bits == strategy.to_bits
 
-  bits = "ccccdddcdddccccddcdddccccddcddcccccddddd"
+  bits = "cddcddccddcdddcdddddddccdddcccccdddddddd"
   m2_stra = Strategy.make_from_bits(bits)
   m3_stra = StrategyM3.make_from_m2_strategy(m2_stra)
-  #m3_stra.show_actions($stdout)
+
+  # noise on B&C
+  m3_stra.modify_action('ccdccdccc',:c)
+  m3_stra.modify_action('ccdcccccd',:c)
+  m3_stra.modify_action('cdccdcccd',:c)
+  m3_stra.modify_action('cdcccdcdc',:c)
+  # noise on B -> on B
+  m3_stra.modify_action('cddccdccd',:c)
+  m3_stra.modify_action('cddddccdd',:c)
+  m3_stra.modify_action('cddcddddc',:c)
+  # noise on B -> on C
+  m3_stra.modify_action('cdcccdccc',:c)
+  m3_stra.modify_action('cdccccccd',:c)
+  m3_stra.modify_action('ccccdcccd',:c)
+  m3_stra.modify_action('cccccdcdc',:c)
+  # noise on B -> _ -> on B
+  m3_stra.modify_action('dcdcdccdc',:c)
+  # noise on B -> _ -> on C
+  m3_stra.modify_action('cdddcccdc',:c)
+  m3_stra.modify_action('cddcdcdcc',:c)
+
+
+  m3_stra.show_actions($stdout)
   puts m3_stra.to_bits
 end
 

@@ -19,6 +19,13 @@ class FullStateM3
     self.new(a_3,a_2,a_1, b_3,b_2,b_1, c_3,c_2,c_1)
   end
 
+  def self.make_from_bits( bits )
+    raise "invalid arg" unless bits.is_a?(String) and bits.length == 9 and bits.each_char.all? {|b| b=='c' or b=='d'}
+
+    args = bits.each_char.map(&:to_sym)
+    self.new(*args)
+  end
+
   attr_reader :a_3,:a_2,:a_1,:b_3,:b_2,:b_1,:c_3,:c_2,:c_1
 
   def initialize(a_3,a_2,a_1,b_3,b_2,b_1,c_3,c_2,c_1)
