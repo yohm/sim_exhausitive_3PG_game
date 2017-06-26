@@ -117,15 +117,14 @@ bool StrategyM3::IsDefensible() const {
   if( HasNegativeDiagonal(A_c) ) { return false; }
 
   for( size_t i=1; i<512; i++) {
-    std::cerr << i << std::endl;
     UpdateAMatrix(A_b, A1_b_t);
     if( HasNegativeDiagonal(A_b) ) { return false; }
     UpdateAMatrix(A_c, A1_c_t);
     if( HasNegativeDiagonal(A_c) ) { return false; }
   }
 
-  for( auto x: A_b[0] ) { std::cerr << x << ' '; }
-  std::cerr << std::endl;
+  //for( auto x: A_b[0] ) { std::cerr << x << ' '; }
+  //std::cerr << std::endl;
   return true;
 }
 
