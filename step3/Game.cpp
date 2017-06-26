@@ -15,7 +15,6 @@ FullState Game::Update(FullState fs) const {
 void Game::MakeUMatrix( double e, umatrix_t &m) const{
   for( size_t i=0; i<64; i++ ) {
     FullState si(i);
-    FullState next = Update(si);
     for( size_t j=0; j<64; j++) {
       FullState sj(j);
       FullState next = Update(sj);
