@@ -34,9 +34,9 @@ public:
     }
   }
 
-private:
   const size_t m_num_nodes;
   std::vector<std::vector<long> > m_links;
+private:
   bool HasSelfLoop(long n) const; // return true if node n has a self-loop
 
   class ComponentFinder {
