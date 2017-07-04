@@ -20,6 +20,30 @@ class Strategy
     end
   end
 
+  def show_actions_latex(io)
+    num_col = 4
+    num_row = State::ALL_STATES.size / num_col
+    num_row.times do |row|
+      num_col.times do |col|
+        idx = row + col * num_row
+        stat = State::ALL_STATES[idx]
+        s = stat.map do |c|
+          if c == -1
+            '\bar{1}'
+          elsif c.is_a?(Integer)
+            c.to_s
+          else
+            c.capitalize
+          end
+        end
+        s.insert(2,',')
+        io.print "$(#{s.join})$ & $#{@strategy[stat].capitalize}$ "
+        io.print "& " unless col == num_col - 1
+      end
+      io.puts "\\\\"
+    end
+  end
+
   def self.make_from_bits( bits )
     actions = bits.each_char.map do |chr|
       chr.to_sym
@@ -136,6 +160,7 @@ if __FILE__ == $0
     bits = ARGV[0]
     stra = Strategy.make_from_bits(bits)
     stra.show_actions($stdout)
+    #stra.show_actions_latex($stdout)
     #a1_b, a1_c = Strategy::AMatrix.construct_a1_matrix(stra)
     #pp a1_b
     #pp a1_b.has_negative_diagonal?
