@@ -17,7 +17,7 @@ end
 
 tmp = "temp.dot"
 io = File.open(tmp, 'w')
-g.to_dot( io, node_attributes )
+g.to_dot( io, node_attributes: node_attributes )
 io.close
 
 cmd = "dot -K fdp -T pdf #{tmp} -o #{ARGV[1]}"

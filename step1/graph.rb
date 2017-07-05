@@ -31,20 +31,30 @@ class DirectedGraph
     (0..(@n-1)).to_a - transient_nodes
   end
 
-  def to_dot(io, node_attributes = {})
+  def to_dot(io, node_attributes: {}, remove_isolated: false)
     io.puts "digraph \"\" {"
     @n.times do |ni|
+      next if remove_isolated and @links[ni].empty?
       label = node_attributes.dig(ni,:label) || ni.to_s
       fontcolor = node_attributes.dig(ni,:fontcolor) || "black"
       io.puts "  #{ni} [ label=\"#{label}\"; fontcolor = #{fontcolor} ];"
     end
     @n.times do |ni|
+      next if remove_isolated and @links[ni].empty?
       @links[ni].each do |nj|
         io.puts "  #{ni} -> #{nj};"
       end
     end
     io.puts "}"
     io.flush
+  end
+
+  def for_each_link
+    @n.times do |ni|
+      @links[ni].each do |nj|
+        yield ni, nj
+      end
+    end
   end
 end
 
