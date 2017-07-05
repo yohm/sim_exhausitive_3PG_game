@@ -1,5 +1,6 @@
 require 'pp'
 require_relative 'state'
+require_relative 'graph'
 
 class Strategy
 
@@ -67,6 +68,26 @@ class Strategy
     n3 = current_fs.next_state(act_a,:d,:c)
     n4 = current_fs.next_state(act_a,:d,:d)
     [n1,n2,n3,n4]
+  end
+
+  def next_full_state_with_self(fs)
+    act_a = action( fs.to_ss )
+    fs_b = FullState.new( fs.b_2, fs.b_1, fs.c_2, fs.c_1, fs.a_2, fs.a_1 )
+    act_b = action( fs_b.to_ss )
+    fs_c = FullState.new( fs.c_2, fs.c_1, fs.b_2, fs.b_1, fs.a_2, fs.a_1 )
+    act_c = action( fs_c.to_ss )
+    next_fs = fs.next_state( act_a, act_b, act_c )
+    next_fs
+  end
+
+  def transition_graph_with_self
+    g = DirectedGraph.new(64)
+    64.times do |i|
+      fs = FullState.make_from_id(i)
+      next_fs = next_full_state_with_self(fs)
+      g.add_link( i, next_fs.to_id )
+    end
+    g
   end
 
   def defensible?
@@ -160,6 +181,7 @@ if __FILE__ == $0
     bits = ARGV[0]
     stra = Strategy.make_from_bits(bits)
     stra.show_actions($stdout)
+    #stra.transition_graph_with_self.to_dot($stdout)
     #stra.show_actions_latex($stdout)
     #a1_b, a1_c = Strategy::AMatrix.construct_a1_matrix(stra)
     #pp a1_b

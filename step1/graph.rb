@@ -30,6 +30,22 @@ class DirectedGraph
   def non_transient_nodes
     (0..(@n-1)).to_a - transient_nodes
   end
+
+  def to_dot(io, node_attributes = {})
+    io.puts "digraph \"\" {"
+    @n.times do |ni|
+      label = node_attributes.dig(ni,:label) || ni.to_s
+      fontcolor = node_attributes.dig(ni,:fontcolor) || "black"
+      io.puts "  #{ni} [ label=\"#{label}\"; fontcolor = #{fontcolor} ];"
+    end
+    @n.times do |ni|
+      @links[ni].each do |nj|
+        io.puts "  #{ni} -> #{nj};"
+      end
+    end
+    io.puts "}"
+    io.flush
+  end
 end
 
 class ComponentFinder
@@ -98,5 +114,6 @@ if __FILE__ == $0
   pp g1.sccs  #=> [ [0,1,2], [3], [4] ]
   pp g1.transient_nodes  # [3]
   pp g1.non_transient_nodes  # [0,1,2,4]
+  g1.to_dot($stdout)
 end
 
