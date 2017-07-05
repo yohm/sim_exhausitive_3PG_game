@@ -49,12 +49,33 @@ class DirectedGraph
     io.flush
   end
 
+  def is_accessible?(from, to)
+    found = false
+    bfs(from) {|n|
+      found = true if n == to
+    }
+    found
+  end
+
   def for_each_link
     @n.times do |ni|
       @links[ni].each do |nj|
         yield ni, nj
       end
     end
+  end
+
+  def bfs(start, &block)
+    stuck=[]
+    bfs_impl = lambda do |n|
+      block.call(n)
+      stuck.push(n)
+      @links[n].each do |nj|
+        next if stuck.include?(nj)
+        bfs_impl.call(nj)
+      end
+    end
+    bfs_impl.call(start)
   end
 end
 
@@ -125,5 +146,9 @@ if __FILE__ == $0
   pp g1.transient_nodes  # [3]
   pp g1.non_transient_nodes  # [0,1,2,4]
   g1.to_dot($stdout)
+
+  g1.bfs(0) {|n| p n}
+  p g1.is_accessible?(0,4) # => true
+  p g1.is_accessible?(3,0) # => false
 end
 
