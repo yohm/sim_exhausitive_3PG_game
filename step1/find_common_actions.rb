@@ -13,7 +13,8 @@ end
 
 pattern = strategies[0].dup
 
-strategies.each do |line|
+strategies.each_with_index do |line,idx|
+  $stderr.puts idx if idx % 100000 == 0
   line.size.times do |i|
     if pattern[i] and pattern[i] != line[i]
       pattern[i] = '-'
