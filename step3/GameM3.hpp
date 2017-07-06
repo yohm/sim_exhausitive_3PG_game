@@ -18,6 +18,7 @@ public:
   FullStateM3 Update(const FullStateM3& fs) const;
   const StrategyM3 sa, sb, sc;
   std::array<double,3> AveragePayoffs(double error, double multi_f, double cost, size_t num_iter=1024) const;
+  double CooperationProbability(double error, size_t num_iter=1024) const;
   void MakeUMatrix( double e, matrix512_t & m ) const;
   static void MakePayoffVector( double r, double c, vec512_t& va, vec512_t& vb, vec512_t& vc);
   // returns payoff vectors. multiplication factor: r, cost: c

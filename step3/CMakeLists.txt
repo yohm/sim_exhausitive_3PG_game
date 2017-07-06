@@ -24,3 +24,10 @@ target_link_libraries(main_distinguishable ${MPI_LIBRARIES})
 add_executable(main main.cpp ${SOURCE_FILES})
 add_executable(main_efficiency main_efficiency.cpp ${SOURCE_FILES})
 target_link_libraries(main_efficiency ${MPI_LIBRARIES})
+
+add_executable(main_m3_defensible main_m3_defensible.cpp ${SOURCE_FILES})
+target_link_libraries(main_m3_defensible ${MPI_LIBRARIES})
+
+add_executable(main_m3_efficiency main_m3_efficiency.cpp ${SOURCE_FILES})
+target_link_libraries(main_m3_efficiency ${MPI_LIBRARIES})
+

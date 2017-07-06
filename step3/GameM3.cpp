@@ -89,7 +89,7 @@ double GameM3::_R2(const vec512_t &v1, const vec512_t &v2) {
 std::array<double,3> GameM3::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter) const {
   matrix512_t m;
   MakeUMatrix(error, m);
-  double delta = 1.0e-10;
+  double delta = 1.0e-7;
   vec512_t init = { 0.0 };
   for( auto& x : init ) { x = 1.0 / N; }
   vec512_t out = GameM3::PowerMethod(m, init, num_iter);
@@ -114,5 +114,23 @@ std::array<double,3> GameM3::AveragePayoffs(double error, double multi_f, double
   double fc = GameM3::Dot(out, vc);
   std::array<double,3> ret = {fa,fb,fc};
   return ret;
+}
+
+double GameM3::CooperationProbability(double error, size_t num_iter) const {
+  matrix512_t m;
+  MakeUMatrix(error, m);
+  double delta = 1.0e-7;
+  vec512_t init = { 0.0 };
+  for( auto& x : init ) { x = 1.0 / N; }
+  vec512_t out = GameM3::PowerMethod(m, init, num_iter);
+  double r2 = _R2(init,out);
+  while( r2 > delta ) {
+    init = out;
+    out = GameM3::PowerMethod(m, init, num_iter);
+    r2 = _R2(init,out);
+    std::cerr << "iterating : " << r2 << std::endl;
+  }
+
+  return out[0];
 }
 

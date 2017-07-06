@@ -186,7 +186,7 @@ std::string Strategy::ToDot() const {
 
 std::string Strategy::ToString() const {
   std::ostringstream oss;
-  for( auto act : actions) {
+  for( Action act : actions) {
     oss << act;
   }
   return oss.str();

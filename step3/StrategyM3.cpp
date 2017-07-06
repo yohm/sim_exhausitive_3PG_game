@@ -99,8 +99,10 @@ std::string StrategyM3::ToDot() const {
 
 std::string StrategyM3::ToString() const {
   std::ostringstream oss;
-  for( auto act : actions) {
-    oss << act;
+  for( Action act : actions) {
+    if(act == Action::C) { oss << 'c';}
+    else if(act == Action::D) { oss << 'd'; }
+    else { throw "must not happen"; }
   }
   return oss.str();
 }
