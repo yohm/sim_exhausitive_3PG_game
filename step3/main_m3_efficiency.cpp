@@ -45,8 +45,8 @@ int main(int argc, char** argv) {
     while( std::getline(fin,line) ) {
       const StrategyM3 str( line.c_str() );
       GameM3 g(str, str, str);
-      double p_c = g.CooperationProbability(e);
-      fout << str.ToString() << ' ' << p_c << "\n";
+      double p_c = g.CooperationProbability(e, 8192);
+      fout << str.ToString() << ' ' << p_c << std::endl;
       count++;
 #ifndef NDEBUG
       if( count % 1000 == 0 ) { std::cerr << "count: " << count << " @rank: " << my_rank << std::endl; }
