@@ -18,9 +18,9 @@ void test_PowerMethod() {
 
   GameM3 g(sa,sb,sc);
 
-  double error = 0.001;
+  double error = 0.0005;
   double r = 2.0, c = 1.0;
-  auto fs = g.AveragePayoffs(error, r, c );
+  auto fs = g.AveragePayoffs(error, r, c, 8192, 1.0e-5 );
   std::cout << std::get<0>(fs) << ' ' << std::get<1>(fs) << ' ' << std::get<2>(fs) << std::endl;
 }
 
