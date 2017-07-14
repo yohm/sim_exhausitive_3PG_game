@@ -88,6 +88,17 @@ class DirectedGraph
     end
     bfs_impl.call(start)
   end
+
+  def self.common_subgraph(g1,g2)
+    g = self.new( g1.n )
+    links1 = []
+    g1.for_each_link {|ni,nj| links1.push( [ni,nj] ) }
+    links2 = []
+    g2.for_each_link {|ni,nj| links2.push( [ni,nj] ) }
+    common_links = links1 & links2
+    common_links.each {|l| g.add_link(*l) }
+    g
+  end
 end
 
 class ComponentFinder
