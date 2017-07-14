@@ -71,6 +71,25 @@ class StrategyM3
     [n1,n2,n3,n4]
   end
 
+  def next_full_state_with_self(s)
+    act_a = action(s.to_id)
+    state_b = FullStateM3.new( s.b_3, s.b_2, s.b_1, s.c_3, s.c_2, s.c_1, s.a_3, s.a_2, s.a_1 )
+    act_b = action(state_b.to_id)
+    state_c = FullStateM3.new( s.c_3, s.c_2, s.c_1, s.b_3, s.b_2, s.b_1, s.a_3, s.a_2, s.a_1 )
+    act_c = action(state_c.to_id)
+    s.next_state(act_a, act_b, act_c )
+  end
+
+  def transition_graph_with_self
+    g = DirectedGraph.new(512)
+    512.times do |i|
+      current = FullStateM3.make_from_id(i)
+      next_s = next_full_state_with_self(current)
+      g.add_link( i, next_s.to_id )
+    end
+    g
+  end
+
   def defensible?
     a1_b, a1_c = AMatrix.construct_a1_matrix(self) # construct_a1_matrix
     a_b, a_c = AMatrix.construct_a1_matrix(self)
