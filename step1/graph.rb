@@ -31,7 +31,11 @@ class DirectedGraph
     (0..(@n-1)).to_a - transient_nodes
   end
 
-  def to_dot(io, node_attributes: {}, remove_isolated: false)
+  def remove_duplicated_links!
+    @links.values.each {|ns| ns.uniq! }
+  end
+
+  def to_dot(io, node_attributes: {}, remove_isolated: false, node_ranks: [])
     io.puts "digraph \"\" {"
     @n.times do |ni|
       next if remove_isolated and @links[ni].empty?
@@ -43,6 +47,13 @@ class DirectedGraph
       next if remove_isolated and @links[ni].empty?
       @links[ni].each do |nj|
         io.puts "  #{ni} -> #{nj};"
+      end
+    end
+    if node_ranks.size > 0
+      ranks = node_ranks.map.with_index {|_,i| "rank_#{i}"}
+      io.puts "  #{ranks.join(' -> ')}"
+      node_ranks.each_with_index do |nodes,i|
+        io.puts "  {rank=same; #{ranks[i]}; #{nodes.join(';')};}"
       end
     end
     io.puts "}"

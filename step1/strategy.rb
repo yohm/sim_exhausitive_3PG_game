@@ -80,6 +80,18 @@ class Strategy
     next_fs
   end
 
+  def transition_graph
+    g = DirectedGraph.new(64)
+    64.times do |i|
+      fs = FullState.make_from_id(i)
+      next_fss = possible_next_full_states(fs)
+      next_fss.each do |next_fs|
+        g.add_link(i,next_fs.to_id)
+      end
+    end
+    g
+  end
+
   def transition_graph_with_self
     g = DirectedGraph.new(64)
     64.times do |i|
