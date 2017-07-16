@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cmath>
 #include "GameM3.hpp"
 
 const size_t GameM3::N = 512;
@@ -61,13 +62,20 @@ void GameM3::_MultiplyAndNormalize(const matrix512_t &m, const vec512_t &v, vec5
 
 vec512_t GameM3::PowerMethod(const matrix512_t &m, const vec512_t &init_v, size_t num_iter) {
   vec512_t va = init_v, vb = {0.0};
+  /*
   vec512_t* in = &va, *out = &vb;
   for( size_t i=0; i<num_iter; i++) {
-    _MultiplyAndNormalize(m, *in, *out);
-    vec512_t *tmp = in;
-    in = out; out = tmp;
+     _MultiplyAndNormalize(m, *in, *out);
+     vec512_t *tmp = in;
+     in = out; out = tmp;
   }
-  return *out;
+  return *in;
+   */
+  for( size_t i=0; i<num_iter/2; i++) {
+    _MultiplyAndNormalize(m, va, vb);
+    _MultiplyAndNormalize(m, vb, va);
+  }
+  return va;
 }
 
 double GameM3::Dot(const vec512_t &v1, const vec512_t &v2) {
@@ -86,24 +94,31 @@ double GameM3::_R2(const vec512_t &v1, const vec512_t &v2) {
   return d;
 }
 
-std::array<double,3> GameM3::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter) const {
+double GameM3::_L1(const vec512_t &v1, const vec512_t &v2) {
+  double d = 0.0;
+  for( size_t i=0; i<N; i++) {
+    d += fabs(v1[i] - v2[i]);
+  }
+  return d;
+}
+
+std::array<double,3> GameM3::AveragePayoffs(double error, double multi_f, double cost, size_t num_iter, double delta) const {
   matrix512_t m;
   MakeUMatrix(error, m);
-  double delta = 1.0e-11;
   vec512_t init = { 0.0 };
   for( auto& x : init ) { x = 1.0 / N; }
   vec512_t out = GameM3::PowerMethod(m, init, num_iter);
-  double r2 = _R2(init,out);
+  double l1 = _L1(init,out);
 
   vec512_t va, vb, vc;
   GameM3::MakePayoffVector(multi_f, cost, va, vb, vc);
 
-  while( r2 > delta ) {
+  while( l1 > delta ) {
     init = out;
     out = GameM3::PowerMethod(m, init, num_iter);
-    r2 = _R2(init,out);
+    l1 = _L1(init,out);
     double fa = GameM3::Dot(out, va);
-    std::cerr << "iterating : " << r2 << ", " << out[0] << ", " << fa << std::endl;
+    std::cerr << "iterating: " << l1 << " " << out[0] << " " << fa << std::endl;
   }
 #ifdef DEBUG
   for( auto x: out ) {
@@ -118,19 +133,18 @@ std::array<double,3> GameM3::AveragePayoffs(double error, double multi_f, double
   return ret;
 }
 
-double GameM3::CooperationProbability(double error, size_t num_iter) const {
+double GameM3::CooperationProbability(double error, size_t num_iter, double delta) const {
   matrix512_t m;
   MakeUMatrix(error, m);
-  double delta = 1.0e-11;
   vec512_t init = { 0.0 };
   for( auto& x : init ) { x = 1.0 / N; }
   vec512_t out = GameM3::PowerMethod(m, init, num_iter);
-  double r2 = _R2(init,out);
-  while( r2 > delta ) {
+  double l1 = _L1(init,out);
+  while( l1 > delta ) {
     init = out;
     out = GameM3::PowerMethod(m, init, num_iter);
-    r2 = _R2(init,out);
-    std::cerr << "iterating : " << r2 << std::endl;
+    l1 = _L1(init,out);
+    std::cerr << "iterating : " << l1 << std::endl;
   }
 
   return out[0];
