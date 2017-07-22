@@ -1,33 +1,34 @@
 cmake_minimum_required(VERSION 3.7)
-project(step3)
+project(cpp)
 
 set(CMAKE_CXX_STANDARD 11)
 
 #set(CMAKE_VERBOSE_MAKEFILE 1)
 
-set(SOURCE_FILES GameM3.cpp GameM3.hpp StrategyM3.cpp StrategyM3.hpp Strategy.cpp Strategy.hpp Game.cpp Game.hpp Graph.cpp Graph.hpp)
+set(SOURCE_FILES_M2 Action.cpp Action.hpp Strategy.cpp Strategy.hpp Game.cpp Game.hpp Graph.cpp Graph.hpp)
+set(SOURCE_FILES_M3 Action.cpp Action.hpp GameM3.cpp GameM3.hpp StrategyM3.cpp StrategyM3.hpp Graph.cpp Graph.hpp)
 find_package(MPI)
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
-add_executable(strategyTest StrategyTest.cpp ${SOURCE_FILES})
-add_executable(strategyM3Test StrategyM3Test.cpp ${SOURCE_FILES})
-add_executable(graphTest GraphTest.cpp Graph.cpp Graph.hpp)
-add_executable(gameTest GameTest.cpp ${SOURCE_FILES})
-add_executable(gameM3Test GameM3Test.cpp ${SOURCE_FILES})
+add_executable(test_Strategy test_Strategy.cpp ${SOURCE_FILES_M2})
+add_executable(test_StrategyM3 test_StrategyM3.cpp ${SOURCE_FILES_M3})
+add_executable(test_Graph test_Graph.cpp Graph.cpp Graph.hpp)
+add_executable(test_Game test_Game.cpp ${SOURCE_FILES_M2})
+add_executable(test_GameM3 test_GameM3.cpp ${SOURCE_FILES_M3})
 
-add_executable(main_defense1 main_defense1.cpp ${SOURCE_FILES})
+add_executable(main_defense1 main_defense1.cpp ${SOURCE_FILES_M2})
 target_link_libraries(main_defense1 ${MPI_LIBRARIES})
 
-add_executable(main_distinguishable main_distinguishable.cpp ${SOURCE_FILES})
+add_executable(main_distinguishable main_distinguishable.cpp ${SOURCE_FILES_M2})
 target_link_libraries(main_distinguishable ${MPI_LIBRARIES})
 
-add_executable(main main.cpp ${SOURCE_FILES})
-add_executable(main_efficiency main_efficiency.cpp ${SOURCE_FILES})
+add_executable(main main.cpp ${SOURCE_FILES_M2})
+add_executable(main_efficiency main_efficiency.cpp ${SOURCE_FILES_M2})
 target_link_libraries(main_efficiency ${MPI_LIBRARIES})
 
-add_executable(main_m3_defensible main_m3_defensible.cpp ${SOURCE_FILES})
+add_executable(main_m3_defensible main_m3_defensible.cpp ${SOURCE_FILES_M3})
 target_link_libraries(main_m3_defensible ${MPI_LIBRARIES})
 
-add_executable(main_m3_efficiency main_m3_efficiency.cpp ${SOURCE_FILES})
+add_executable(main_m3_efficiency main_m3_efficiency.cpp ${SOURCE_FILES_M3})
 target_link_libraries(main_m3_efficiency ${MPI_LIBRARIES})
 

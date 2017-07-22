@@ -9,6 +9,7 @@
 #include <ostream>
 #include "Graph.hpp"
 #include "Strategy.hpp"
+#include "Action.hpp"
 
 #ifndef STRATEGY_M3_HPP
 #define STRATEGY_M3_HPP

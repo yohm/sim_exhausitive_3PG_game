@@ -8,16 +8,11 @@
 #include <cstdint>
 #include <ostream>
 #include "Graph.hpp"
+#include "Action.hpp"
 
 #ifndef STRATEGY_HPP
 #define STRATEGY_HPP
 
-enum Action {
-  C,
-  D
-};
-
-char A2C( Action act );
 
 // ShortState: in short notation
 //   cc11, cd1-1, dd22 etc...
