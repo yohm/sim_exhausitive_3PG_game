@@ -1,4 +1,4 @@
-require_relative 'strategy'
+require_relative '../lib/strategy'
 require 'pp'
 
 class StrategyEnumerator

@@ -1,6 +1,6 @@
 require 'pp'
-require_relative 'graph'
-require_relative 'state'
+require_relative '../lib/graph'
+require_relative '../lib/state'
 
 module DefensibleAllD
 
@@ -116,19 +116,6 @@ def strategy_to_bits( strategy )
 end
 
 defensible_strategies = DefensibleAllD.defensible_strategies
-=begin
-pp "# defensible : #{defensible_strategies.count}"
-
-pp "possible actions for states: ", DefensibleAllD::UNFIXED_STATES
-pp "must be one of the following"
-pp defensible_strategies.map {|str|
-  DefensibleAllD::UNFIXED_STATES.map do |s|
-    str[s]
-  end
-}
-
-pp "bits"
-=end
 defensible_strategies.each do |str|
   puts strategy_to_bits(str)
 end

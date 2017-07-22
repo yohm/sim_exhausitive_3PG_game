@@ -1,4 +1,4 @@
-require_relative "strategy"
+require_relative "../lib/strategy"
 
 unless ARGV.size == 2
   $stderr.puts "[Error] Usage: ruby #{__FILE__} strategy_string output.pdf"

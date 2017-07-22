@@ -1,5 +1,5 @@
 require 'pp'
-require_relative 'strategy'
+require_relative '../lib/strategy'
 
 unless ARGV.size == 1
   $stderr.puts "[usage] ruby #{__FILE__} strategies.txt"
