@@ -114,15 +114,15 @@ bool StrategyM3::IsDefensible() const {
 
   ConstructA1Matrix(A_b, A_c);
   a_matrix_t A1_b_t = Transpose(A_b);
-  a_matrix_t A1_c_t = Transpose(A_c);
+  // a_matrix_t A1_c_t = Transpose(A_c);
   if( HasNegativeDiagonal(A_b) ) { return false; }
-  if( HasNegativeDiagonal(A_c) ) { return false; }
+  // if( HasNegativeDiagonal(A_c) ) { return false; } // assuming symmetry
 
   for( size_t i=1; i<512; i++) {
     UpdateAMatrix(A_b, A1_b_t);
     if( HasNegativeDiagonal(A_b) ) { return false; }
-    UpdateAMatrix(A_c, A1_c_t);
-    if( HasNegativeDiagonal(A_c) ) { return false; }
+    // UpdateAMatrix(A_c, A1_c_t);
+    // if( HasNegativeDiagonal(A_c) ) { return false; }
   }
 
   //for( auto x: A_b[0] ) { std::cerr << x << ' '; }

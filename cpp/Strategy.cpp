@@ -199,6 +199,16 @@ bool Strategy::IsDefensible1() const {
   return diff.size() == 0;
 }
 
+Strategy::int_matrix_t Strategy::Transpose(const Strategy::int_matrix_t &a) const {
+  int_matrix_t temp;
+  for( size_t i=0; i<a.size(); i++) {
+    for( size_t j=0; j<a.size(); j++) {
+      temp[i][j] = a[j][i];
+    }
+  }
+  return temp;
+}
+
 bool Strategy::IsDefensible() const {
 
   int_matrix_t A_b; // relative payoff matrix. A_ij = payoff_{Alice} - payoff_{Bob}
@@ -207,14 +217,17 @@ bool Strategy::IsDefensible() const {
   ConstructA1Matrix(A1_b, A1_c);
 
   ConstructA1Matrix(A_b, A_c);
+  int_matrix_t A1_b_t = Transpose(A_b);
   if( HasNegativeDiagonal(A_b) ) { return false; }
-  if( HasNegativeDiagonal(A_c) ) { return false; }
+  // if( HasNegativeDiagonal(A_c) ) { return false; } // assuming symmetry between B&C
 
   for( size_t i=1; i<64; i++) {
-    UpdateAMatrix(A_b, A1_b);
+    UpdateAMatrix(A_b, A1_b_t);
     if( HasNegativeDiagonal(A_b) ) { return false; }
+    /*  assuming symmetry between B&C
     UpdateAMatrix(A_c, A1_c);
     if( HasNegativeDiagonal(A_c) ) { return false; }
+    */
   }
   return true;
 }
@@ -240,23 +253,24 @@ void Strategy::ConstructA1Matrix(Strategy::int_matrix_t &A1_b, Strategy::int_mat
 
 }
 
-void Strategy::UpdateAMatrix(Strategy::int_matrix_t &A, const Strategy::int_matrix_t &A1) const {
-  const int INFINITE = 100;
+void Strategy::UpdateAMatrix(Strategy::int_matrix_t &A, const Strategy::int_matrix_t &A1_t) const {
+  const int INFINITE = 65536;
+  const size_t N = 64;
 
   int_matrix_t temp;
-  for( int i=0; i<64; i++) {
-    for( int j=0; j<64; j++) {
+  for( int i=0; i<N; i++) {
+    for( int j=0; j<N; j++) {
       temp[i][j] = INFINITE;
-      for( int k=0; k<64; k++) {
-        if( A[i][k] == INFINITE || A1[k][j] == INFINITE ) { continue; }
-        int aikj = A[i][k] + A1[k][j];
+      for( int k=0; k<N; k++) {
+        // if( A[i][k] == INFINITE || A1_t[k][j] == INFINITE ) { continue; }
+        int aikj = A[i][k] + A1_t[j][k];
         if( aikj < temp[i][j] ) { temp[i][j] = aikj; }
       }
     }
   }
 
-  for( int i=0; i<64; i++) {
-    for (int j = 0; j < 64; j++) {
+  for( int i=0; i<N; i++) {
+    for (int j = 0; j < N; j++) {
       A[i][j] = temp[i][j];
     }
   }

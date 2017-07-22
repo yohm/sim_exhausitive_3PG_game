@@ -150,6 +150,7 @@ private:
   void NextPossibleFullStates( FullState current, std::vector<FullState>& next_states) const;
   typedef std::array<std::array<int,64>,64> int_matrix_t;
   void ConstructA1Matrix( int_matrix_t& A1_b, int_matrix_t& A1_c ) const;
+  int_matrix_t Transpose(const int_matrix_t &a) const;
   void UpdateAMatrix( int_matrix_t& A, const int_matrix_t& A1 ) const;
   bool HasNegativeDiagonal( const int_matrix_t& A ) const;
 };
