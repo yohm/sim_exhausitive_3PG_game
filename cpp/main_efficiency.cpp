@@ -6,21 +6,6 @@
 #include "Strategy.hpp"
 #include "Game.hpp"
 
-double AveragePayoff( const Strategy& str, double e) {
-  Game g(str, str, str);
-
-  const double r = 2.0;
-  const double c = 1.0;
-  auto fs = g.AveragePayoffs(e,r,c,1024);
-  double fa = std::get<0>(fs);
-  return fa;
-}
-
-bool IsEfficient(const Strategy& str, double e, double th) {
-  double fa = AveragePayoff(str,e);
-  return (fa >= th);
-}
-
 int main(int argc, char** argv) {
 
   MPI_Init(&argc, &argv);
@@ -55,8 +40,8 @@ int main(int argc, char** argv) {
     int count = 0;
     while( std::getline(fin,line) ) {
       const Strategy str( line.c_str() );
-      double payoff = AveragePayoff(str, e);
-      fout << str.ToString() << ' ' << payoff << "\n";
+      Game g(str, str, str);
+      fout << str.ToString() << ' ' << g.CooperationProbability(e) << "\n";
       count++;
 #ifndef NDEBUG
       if( count % 1000 == 0 ) { std::cerr << "count: " << count << " @rank: " << my_rank << std::endl; }
@@ -68,8 +53,8 @@ int main(int argc, char** argv) {
   else {
     assert( my_rank == 0 );
     const Strategy str( argv[2] );
-    double payoff = AveragePayoff(str, e);
-    std::cout << "efficiency: " << payoff << std::endl;
+    Game g(str, str, str);
+    std::cout << "efficiency: " << g.CooperationProbability(e) << std::endl;
   }
 
   MPI_Finalize();

@@ -15,7 +15,7 @@ FullStateM3 GameM3::Update(const FullStateM3& fs) const {
   return fs.NextState(act_a,act_b,act_c);
 }
 
-void GameM3::MakeUMatrix( double e, matrix512_t &m) const{
+void GameM3::MakeUMatrix( double e, matrix512_t &m) const {
   for( size_t i=0; i<N; i++ ) {
     FullStateM3 si(i);
     for( size_t j=0; j<N; j++) {
@@ -48,7 +48,7 @@ void GameM3::MakePayoffVector(double r, double cost, vec512_t &va, vec512_t &vb,
   }
 }
 
-void GameM3::_MultiplyAndNormalize(const matrix512_t &m, const vec512_t &v, vec512_t &result){
+void GameM3::_MultiplyAndNormalize(const matrix512_t &m, const vec512_t &v, vec512_t &result) {
   double sum = 0.0;
   for( size_t i=0; i<N; i++ ) {
     result[i] = 0.0;
@@ -62,15 +62,6 @@ void GameM3::_MultiplyAndNormalize(const matrix512_t &m, const vec512_t &v, vec5
 
 vec512_t GameM3::PowerMethod(const matrix512_t &m, const vec512_t &init_v, size_t num_iter) {
   vec512_t va = init_v, vb = {0.0};
-  /*
-  vec512_t* in = &va, *out = &vb;
-  for( size_t i=0; i<num_iter; i++) {
-     _MultiplyAndNormalize(m, *in, *out);
-     vec512_t *tmp = in;
-     in = out; out = tmp;
-  }
-  return *in;
-   */
   for( size_t i=0; i<num_iter/2; i++) {
     _MultiplyAndNormalize(m, va, vb);
     _MultiplyAndNormalize(m, vb, va);
@@ -82,14 +73,6 @@ double GameM3::Dot(const vec512_t &v1, const vec512_t &v2) {
   double d = 0.0;
   for( size_t i=0; i<N; i++) {
     d += v1[i] * v2[i];
-  }
-  return d;
-}
-
-double GameM3::_R2(const vec512_t &v1, const vec512_t &v2) {
-  double d = 0.0;
-  for( size_t i=0; i<N; i++) {
-    d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
   }
   return d;
 }

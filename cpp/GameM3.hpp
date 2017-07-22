@@ -24,7 +24,6 @@ public:
   // returns payoff vectors. multiplication factor: r, cost: c
   static vec512_t PowerMethod(const matrix512_t& m, const vec512_t& init_v, size_t num_iter );
   static double Dot(const vec512_t& v1, const vec512_t& v2);
-  static double _R2(const vec512_t & v1, const vec512_t& v2);
   static double _L1(const vec512_t & v1, const vec512_t& v2);
   static void _MultiplyAndNormalize(const matrix512_t &m, const vec512_t &v, vec512_t &result);
 

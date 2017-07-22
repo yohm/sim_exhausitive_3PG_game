@@ -10,10 +10,10 @@ set(SOURCE_FILES_M3 Action.cpp Action.hpp GameM3.cpp GameM3.hpp StrategyM3.cpp S
 find_package(MPI)
 include_directories(SYSTEM ${MPI_INCLUDE_PATH})
 
-add_executable(test_Strategy test_Strategy.cpp ${SOURCE_FILES_M2})
-add_executable(test_StrategyM3 test_StrategyM3.cpp ${SOURCE_FILES_M3})
 add_executable(test_Graph test_Graph.cpp Graph.cpp Graph.hpp)
+add_executable(test_Strategy test_Strategy.cpp ${SOURCE_FILES_M2})
 add_executable(test_Game test_Game.cpp ${SOURCE_FILES_M2})
+add_executable(test_StrategyM3 test_StrategyM3.cpp ${SOURCE_FILES_M3})
 add_executable(test_GameM3 test_GameM3.cpp ${SOURCE_FILES_M3})
 
 add_executable(main_defensible main_defensible.cpp ${SOURCE_FILES_M2})

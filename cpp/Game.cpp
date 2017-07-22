@@ -1,8 +1,9 @@
 //
-// Created by Yohsuke Muraes on 2017/05/22.
+// Created by Yohsuke Murase on 2017/05/22.
 //
 
 #include <iostream>
+#include <cmath>
 #include "Game.hpp"
 
 FullState Game::Update(FullState fs) const {
@@ -12,7 +13,7 @@ FullState Game::Update(FullState fs) const {
   return FullState( fs.a_1, act_a, fs.b_1, act_b, fs.c_1, act_c);
 }
 
-void Game::MakeUMatrix( double e, umatrix_t &m) const{
+void Game::MakeUMatrix( double e, umatrix_t &m) const {
   for( size_t i=0; i<64; i++ ) {
     FullState si(i);
     for( size_t j=0; j<64; j++) {
@@ -75,10 +76,10 @@ double Game::Dot(const vec64_t &v1, const vec64_t &v2) {
   return d;
 }
 
-double Game::_R2(const vec64_t &v1, const vec64_t &v2) {
+double Game::_L1(const vec64_t &v1, const vec64_t &v2) {
   double d = 0.0;
   for( size_t i=0; i<v1.size(); i++) {
-    d += (v1[i] - v2[i]) * (v1[i] - v2[i]);
+    d += fabs(v1[i] - v2[i]);
   }
   return d;
 }
@@ -90,11 +91,11 @@ std::array<double,3> Game::AveragePayoffs(double error, double multi_f, double c
   vec64_t init = { 0.0 };
   for( auto& x : init ) { x = 1.0 / 64.0; }
   vec64_t out = Game::PowerMethod(m, init, num_iter);
-  double r2 = _R2(init,out);
+  double r2 = _L1(init,out);
   while( r2 > delta ) {
     init = out;
     out = Game::PowerMethod(m, init, num_iter);
-    r2 = _R2(init,out);
+    r2 = _L1(init,out);
     // std::cerr << "iterating : " << r2 << std::endl;
   }
 #ifdef DEBUG
@@ -111,5 +112,20 @@ std::array<double,3> Game::AveragePayoffs(double error, double multi_f, double c
   double fc = Game::Dot(out, vc);
   std::array<double,3> ret = {fa,fb,fc};
   return ret;
+}
+
+double Game::CooperationProbability(double error, size_t num_iter, double delta) const {
+  umatrix_t m;
+  MakeUMatrix(error, m);
+  vec64_t init = { 0.0 };
+  for( auto& x : init ) { x = 1.0 / init.size(); }
+  vec64_t out = Game::PowerMethod(m, init, num_iter);
+  double l1 = _L1(init,out);
+  while( l1 > delta ) {
+    init = out;
+    out = Game::PowerMethod(m, init, num_iter);
+    l1 = _L1(init,out);
+  }
+  return out[0];
 }
 
