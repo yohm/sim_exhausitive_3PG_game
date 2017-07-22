@@ -16,13 +16,12 @@ add_executable(test_Graph test_Graph.cpp Graph.cpp Graph.hpp)
 add_executable(test_Game test_Game.cpp ${SOURCE_FILES_M2})
 add_executable(test_GameM3 test_GameM3.cpp ${SOURCE_FILES_M3})
 
-add_executable(main_defense1 main_defense1.cpp ${SOURCE_FILES_M2})
-target_link_libraries(main_defense1 ${MPI_LIBRARIES})
+add_executable(main_defensible main_defensible.cpp ${SOURCE_FILES_M2})
+target_link_libraries(main_defensible ${MPI_LIBRARIES})
 
 add_executable(main_distinguishable main_distinguishable.cpp ${SOURCE_FILES_M2})
 target_link_libraries(main_distinguishable ${MPI_LIBRARIES})
 
-add_executable(main main.cpp ${SOURCE_FILES_M2})
 add_executable(main_efficiency main_efficiency.cpp ${SOURCE_FILES_M2})
 target_link_libraries(main_efficiency ${MPI_LIBRARIES})
 
