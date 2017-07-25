@@ -90,6 +90,16 @@ class StrategyM3
     g
   end
 
+  def self.node_attributes
+    attr = {}
+    512.times do |i|
+      s = FullStateM3.make_from_id(i)
+      attr[i] = {}
+      attr[i][:label] = "#{i}_#{s.to_s}"
+    end
+    attr
+  end
+
   def defensible?
     a1_b, a1_c = AMatrix.construct_a1_matrix(self) # construct_a1_matrix
     a_b, a_c = AMatrix.construct_a1_matrix(self)

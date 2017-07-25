@@ -102,6 +102,16 @@ class Strategy
     g
   end
 
+  def self.node_attributes
+    node_attributes = {}
+    64.times do |i|
+      fs = FullState.make_from_id(i)
+      node_attributes[i] = {}
+      node_attributes[i][:label] = "#{i}_#{fs.to_s}"
+    end
+    node_attributes
+  end
+
   def defensible?
     a1_b, a1_c = AMatrix.construct_a1_matrix(self) # construct_a1_matrix
     a_b, a_c = AMatrix.construct_a1_matrix(self)

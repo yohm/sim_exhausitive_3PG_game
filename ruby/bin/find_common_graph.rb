@@ -22,19 +22,10 @@ end
 
 g = graphs.inject {|memo,g| DirectedGraph.common_subgraph(memo,g) }
 
-node_attributes = {}
 if g.n == 64
-  64.times do |i|
-    fs = FullState.make_from_id(i)
-    node_attributes[i] = {}
-    node_attributes[i][:label] = "#{i}_#{fs.to_s}"
-  end
+  node_attributes = Strategy.node_attributes
 else
-  512.times do |i|
-    s = FullStateM3.make_from_id(i)
-    node_attributes[i] = {}
-    node_attributes[i][:label] = "#{i}_#{s.to_s}"
-  end
+  node_attributes = StrategyM3.node_attributes
 end
 g.to_dot($stdout, remove_isolated: true, node_attributes: node_attributes)
 

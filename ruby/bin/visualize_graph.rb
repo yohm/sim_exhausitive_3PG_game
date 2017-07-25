@@ -8,12 +8,7 @@ end
 stra = Strategy.make_from_bits(ARGV[0])
 g = stra.transition_graph_with_self
 
-node_attributes = {}
-64.times do |i|
-  fs = FullState.make_from_id(i)
-  node_attributes[i] = {}
-  node_attributes[i][:label] = "#{i}_#{fs.to_s}"
-end
+node_attributes = Strategy.node_attributes
 
 tmp = "temp.dot"
 io = File.open(tmp, 'w')
