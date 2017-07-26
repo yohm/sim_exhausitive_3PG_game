@@ -31,3 +31,5 @@ target_link_libraries(main_m3_defensible ${MPI_LIBRARIES})
 add_executable(main_m3_efficiency main_m3_efficiency.cpp ${SOURCE_FILES_M3})
 target_link_libraries(main_m3_efficiency ${MPI_LIBRARIES})
 
+add_executable(main_m3_umatrix main_m3_umatrix.cpp ${SOURCE_FILES_M3})
+

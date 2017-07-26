@@ -51,6 +51,28 @@ void test_UMatrix() {
   }
 }
 
+void test_UMatrix2() {
+  std::cout << "testing UMatrix2" << std::endl;
+  const std::array<Action,40> acts = { // a partially successful strategy
+      C,D,D,C,D,D,C,C,D,D,
+      C,C,D,D,C,D,D,D,D,D,
+      D,D,C,C,D,D,D,C,C,C,
+      C,C,D,D,C,D,D,D,D,D,
+  };
+  Strategy sa(acts), sb(acts), sc(acts);
+
+  Game g(sa,sb,sc);
+  umatrix_t m = {0.0};
+  g.MakeUMatrix(0.1, m);
+
+  for( auto v : m ) {
+    for( double x : v ) {
+      printf("%.3f ", x);
+    }
+    printf("\n");
+  }
+}
+
 void print_v(vec64_t v) {
   for( auto x : v ) { printf("%.2f ", x); }
   printf("\n");
@@ -78,13 +100,6 @@ void test_PowerMethod() {
       C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,C,
       C,C,C,C,C,C,C,C
   };
-  /*
-  const std::array<Action,40> acts = {
-      D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,
-      D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,
-      D,D,D,D,D,D,D,D
-  };
-   */
   Strategy sa(acts), sb(acts), sc(acts);
 
   Game g(sa,sb,sc);
@@ -119,6 +134,7 @@ int main() {
 
   test_Game();
   test_UMatrix();
+  test_UMatrix2();
   test_PayoffVector();
   test_PowerMethod();
 
