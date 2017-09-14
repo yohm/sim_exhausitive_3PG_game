@@ -193,3 +193,17 @@ bool StrategyM3::IsDistinguishable() const {
   throw "not implemented yet";
   return true;
 }
+
+StrategyM3 StrategyM3::AllC() {
+  const char* allc =
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+  return StrategyM3(allc);
+}
+

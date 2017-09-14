@@ -33,3 +33,5 @@ target_link_libraries(main_m3_efficiency ${MPI_LIBRARIES})
 
 add_executable(main_m3_umatrix main_m3_umatrix.cpp ${SOURCE_FILES_M3})
 
+add_executable(main_m3_distinguishable main_m3_distinguishable.cpp ${SOURCE_FILES_M3})
+target_link_libraries(main_m3_distinguishable ${MPI_LIBRARIES})

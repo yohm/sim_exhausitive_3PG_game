@@ -106,6 +106,7 @@ public:
   bool IsDistinguishable() const;
   Graph TransitionGraph() const;
   std::string ToDot() const; // dump in dot format
+  static StrategyM3 AllC(); // return AllC strategy
 private:
   std::vector<FullStateM3> NextPossibleFullStates( FullStateM3 current ) const;
   typedef std::array<std::array<int,512>,512> a_matrix_t;

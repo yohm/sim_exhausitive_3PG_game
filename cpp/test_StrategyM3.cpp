@@ -103,6 +103,22 @@ void test_Defensible() {
   expect( allD.IsDefensible() == true );
 }
 
+void test_AllC() {
+  const StrategyM3 allc = StrategyM3::AllC();
+  std::string allc_str =
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+  std::cerr << "test AllC" << std::endl;
+  expect( allc.IsDefensible() == false );
+  expect( allc.ToString() == allc_str );
+}
+
 int main() {
   std::cout << "Testing StrategyM3 class" << std::endl;
 
@@ -111,6 +127,7 @@ int main() {
 
   test_TransitionGraph();
   test_Defensible();
+  test_AllC();
   return 0;
 }
 

@@ -14,7 +14,16 @@ void test_PowerMethod() {
           "ddcdcccdccddcdddcddddddcddddddddddddcdcdcdcddddcdddccdcdcdcddcdddcddcdcdcdcddddcdddccdcdcdcddcdddcddcdddcddddd"
           "cdddcddccddcddddddddddcdddcdddddcdddcddcdddcddddddddddddcdddcddcdddcddcdcccdccddccddccddcdddcddcdddcddcdcccdcc"
           "ddccddccccddccddcdddcdddddddddddddddddddccddccddcdddcddddddddddddddddddd";
-  StrategyM3 sa(acts), sb(acts), sc(acts);
+  const char* allc =
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+  StrategyM3 sa(acts), sb(acts), sc(allc);
 
   GameM3 g(sa,sb,sc);
 
