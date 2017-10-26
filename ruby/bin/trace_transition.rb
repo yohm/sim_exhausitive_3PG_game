@@ -1,5 +1,5 @@
-require_relative "lib/strategy"
-require_relative "lib/strategy_m3"
+require_relative "../lib/strategy"
+require_relative "../lib/strategy_m3"
 
 unless ARGV.size >= 2
   $stderr.puts "[Error] Usage: ruby #{__FILE__} strategies.txt start_state_id [ids...]"
