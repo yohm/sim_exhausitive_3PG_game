@@ -24,6 +24,42 @@ class StrategyM3
     io.print "\n"
   end
 
+  def show_actions_latex(io)
+    a_states = 0..7
+    bc_states = 0..63
+
+    io.puts <<-'EOS'
+\begin{tabular}{c|cccccccc}
+\hline
+& \multicolumn{8}{c}{$A_{t-3}A_{t-2}A_{t-1}$} \\
+$B_{t-3}B_{t-2}B_{t-1}C_{t-3}C_{t-2}C_{t-1}$ & $ccc$ & $ccd$ & $cdc$ & $cdd$ & $dcc$ & $dcd$ & $ddc$ & $ddd$ \\
+\hline
+EOS
+
+    bc_states.each do |bc|
+      b = bc / 8
+      c = bc % 8
+      next if b > c
+      acts = a_states.map do |a|
+        i = a * 64 + bc
+        @actions[i]
+      end
+      bits = FullStateM3.make_from_id(bc).to_a # to make header
+      header = "$#{bits[3..5].join}#{bits[6..8].join}$"
+      if b != c
+        header += " / $#{bits[6..8].join}#{bits[3..5].join}$"
+      else
+        header += "           "
+      end
+      io.puts header + " & " + acts.map{|x| "$#{x}$" }.join(' & ') + " \\\\"
+    end
+
+    io.puts <<-'EOS'
+\hline
+\end{tabular}
+EOS
+  end
+
   def self.make_from_bits( bits )
     actions = bits.each_char.map do |chr|
       chr.to_sym
