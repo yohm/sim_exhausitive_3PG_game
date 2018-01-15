@@ -62,7 +62,7 @@ class DirectedGraph
 
   def is_accessible?(from, to)
     found = false
-    bfs(from) {|n|
+    dfs(from) {|n|
       found = true if n == to
     }
     found
@@ -76,17 +76,17 @@ class DirectedGraph
     end
   end
 
-  def bfs(start, &block)
-    stuck=[]
-    bfs_impl = lambda do |n|
+  def dfs(start, &block)
+    stack=[]
+    dfs_impl = lambda do |n|
       block.call(n)
-      stuck.push(n)
+      stack.push(n)
       @links[n].each do |nj|
-        next if stuck.include?(nj)
-        bfs_impl.call(nj)
+        next if stack.include?(nj)
+        dfs_impl.call(nj)
       end
     end
-    bfs_impl.call(start)
+    dfs_impl.call(start)
   end
 
   def self.common_subgraph(g1,g2)
@@ -191,9 +191,9 @@ if __FILE__ == $0
       assert_equal sio.string.empty?, false
     end
 
-    def test_bfs
+    def test_dfs
       traversed = []
-      @g.bfs(0) {|n| traversed << n }
+      @g.dfs(0) {|n| traversed << n }
       assert_equal [0,2,1,3,4], traversed
     end
 
