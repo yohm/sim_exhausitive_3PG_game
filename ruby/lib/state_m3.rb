@@ -120,7 +120,7 @@ if __FILE__ == $0
       assert_equal 273, fs.to_id
       assert_equal 0, fs.relative_payoff_against(:B)
       assert_equal -1, fs.relative_payoff_against(:C)
-      assert_equal [36,9], fs.to_m2_states.map(&:to_id)
+      assert_equal ['dccdcc','ccdccd'], fs.to_m2_states.map(&:to_s)
       assert_equal 'ccc-dcd-cdd', fs.next_state(:c,:d,:d).to_s
     end
   end

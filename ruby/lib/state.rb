@@ -164,7 +164,7 @@ if __FILE__ == $0
       assert_equal [:c,:c,:c,:d,:d,:d], fs.next_state(:c,:d,:d).to_a
     end
 
-    def test_state
+    def test_state44
       fs = FullState.make_from_id(44)
       assert_equal [:d, :c, :d, :d, :c, :c], fs.to_a
       assert_equal [:d,:c,1,-1], fs.to_ss
