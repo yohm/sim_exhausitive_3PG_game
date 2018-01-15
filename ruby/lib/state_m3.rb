@@ -91,17 +91,38 @@ class FullStateM3
 end
 
 if __FILE__ == $0
-  fs = FullStateM3.make_from_id(511)
-  pp fs.to_a, fs.to_s
-  pp "id: #{fs.to_id}"
-  fs = FullStateM3.make_from_id(0)
-  pp fs.to_a, fs.to_s
-  pp "id: #{fs.to_id}"
-  fs = FullStateM3.make_from_id(273)
-  pp fs.to_a, fs.to_s
-  pp "id: #{fs.to_id}"
-  pp fs.relative_payoff_against(:B), fs.relative_payoff_against(:C)
-  puts "m2_states: #{fs.to_m2_states.map(&:to_id)}"
-  pp fs.next_state(:c,:d,:d).to_a
+  require 'minitest/autorun'
+
+  class StateM3Test < Minitest::Test
+
+    def test_alld
+      fs = FullStateM3.make_from_id(511)
+      assert_equal [:d,:d,:d,:d,:d,:d,:d,:d,:d], fs.to_a
+      assert_equal 'ddd-ddd-ddd', fs.to_s
+      assert_equal 511, fs.to_id
+      assert_equal 0, fs.relative_payoff_against(:C)
+      assert_equal 0, fs.relative_payoff_against(:B)
+    end
+
+    def test_allc
+      fs = FullStateM3.make_from_id(0)
+      assert_equal [:c,:c,:c,:c,:c,:c,:c,:c,:c], fs.to_a
+      assert_equal 'ccc-ccc-ccc', fs.to_s
+      assert_equal 0, fs.to_id
+      assert_equal 0, fs.relative_payoff_against(:B)
+      assert_equal 0, fs.relative_payoff_against(:C)
+    end
+
+    def test_state273
+      fs = FullStateM3.make_from_id(273)
+      assert_equal [:d, :c, :c, :c, :d, :c, :c, :c, :d], fs.to_a
+      assert_equal 'dcc-cdc-ccd', fs.to_s
+      assert_equal 273, fs.to_id
+      assert_equal 0, fs.relative_payoff_against(:B)
+      assert_equal -1, fs.relative_payoff_against(:C)
+      assert_equal [36,9], fs.to_m2_states.map(&:to_id)
+      assert_equal 'ccc-dcd-cdd', fs.next_state(:c,:d,:d).to_s
+    end
+  end
 end
 
