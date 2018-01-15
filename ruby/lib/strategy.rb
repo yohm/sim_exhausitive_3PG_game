@@ -21,6 +21,15 @@ class Strategy
     end
   end
 
+  def show_actions_using_full_state(io)
+    64.times do |i|
+      fs = FullState.make_from_id(i)
+      act = @strategy[fs.to_ss]
+      io.print "#{act}@#{fs}\t"
+      io.print "\n" if i % 8 == 7
+    end
+  end
+
   def show_actions_latex(io)
     num_col = 4
     num_row = State::ALL_STATES.size / num_col
@@ -203,6 +212,7 @@ if __FILE__ == $0
     bits = ARGV[0]
     stra = Strategy.make_from_bits(bits)
     stra.show_actions($stdout)
+    stra.show_actions_using_full_state($stdout)
     #stra.transition_graph_with_self.to_dot($stdout)
     #stra.show_actions_latex($stdout)
     #a1_b, a1_c = Strategy::AMatrix.construct_a1_matrix(stra)

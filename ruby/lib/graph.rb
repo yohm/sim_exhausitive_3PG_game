@@ -62,7 +62,7 @@ class DirectedGraph
 
   def is_accessible?(from, to)
     found = false
-    bfs(from) {|n|
+    dfs(from) {|n|
       found = true if n == to
     }
     found
@@ -76,17 +76,17 @@ class DirectedGraph
     end
   end
 
-  def bfs(start, &block)
-    stuck=[]
-    bfs_impl = lambda do |n|
+  def dfs(start, &block)
+    stack=[]
+    dfs_impl = lambda do |n|
       block.call(n)
-      stuck.push(n)
+      stack.push(n)
       @links[n].each do |nj|
-        next if stuck.include?(nj)
-        bfs_impl.call(nj)
+        next if stack.include?(nj)
+        dfs_impl.call(nj)
       end
     end
-    bfs_impl.call(start)
+    dfs_impl.call(start)
   end
 
   def self.common_subgraph(g1,g2)
@@ -156,21 +156,51 @@ class ComponentFinder
 end
 
 if __FILE__ == $0
-  g1 = DirectedGraph.new(5)
-  g1.add_link(1, 0)
-  g1.add_link(0, 2)
-  g1.add_link(2, 1)
-  g1.add_link(0, 3)
-  g1.add_link(3, 4)
-  g1.add_link(4, 4)
-  pp g1
-  pp g1.sccs  #=> [ [0,1,2], [3], [4] ]
-  pp g1.transient_nodes  # [3]
-  pp g1.non_transient_nodes  # [0,1,2,4]
-  g1.to_dot($stdout)
+  require 'minitest/autorun'
 
-  g1.bfs(0) {|n| p n}
-  p g1.is_accessible?(0,4) # => true
-  p g1.is_accessible?(3,0) # => false
+  class TestDirectedGraph < Minitest::Test
+
+    def setup
+      @g = DirectedGraph.new(5)
+      @g.add_link(1, 0)
+      @g.add_link(0, 2)
+      @g.add_link(2, 1)
+      @g.add_link(0, 3)
+      @g.add_link(3, 4)
+      @g.add_link(4, 4)
+    end
+
+    def test_add_link
+      assert_equal 5, @g.n
+      expected = {0=>[2,3],1=>[0],2=>[1],3=>[4],4=>[4]}
+      assert_equal expected, @g.links
+    end
+
+    def test_sccs
+      assert_equal [ [0,1,2], [3], [4] ], @g.sccs.map(&:sort).sort
+    end
+
+    def test_transient_nodes
+      assert_equal [3], @g.transient_nodes
+      assert_equal [0,1,2,4], @g.non_transient_nodes.sort
+    end
+
+    def test_to_dot
+      sio = StringIO.new
+      @g.to_dot(sio)
+      assert_equal sio.string.empty?, false
+    end
+
+    def test_dfs
+      traversed = []
+      @g.dfs(0) {|n| traversed << n }
+      assert_equal [0,2,1,3,4], traversed
+    end
+
+    def test_accessible
+      assert_equal true, @g.is_accessible?(0,4)
+      assert_equal false, @g.is_accessible?(3,0)
+    end
+  end
 end
 

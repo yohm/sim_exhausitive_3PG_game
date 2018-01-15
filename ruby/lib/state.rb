@@ -135,16 +135,43 @@ class FullState
 end
 
 if __FILE__ == $0
-  fs = FullState.make_from_id(63)
-  pp fs.to_a
-  pp "id: #{fs.to_id}, ss: #{fs.to_ss}"
-  fs = FullState.make_from_id(0)
-  pp fs.to_a
-  pp "id: #{fs.to_id}, ss: #{fs.to_ss}"
-  fs = FullState.make_from_id(43)
-  pp fs.to_a
-  pp "id: #{fs.to_id}, ss: #{fs.to_ss}"
-  pp fs.relative_payoff_against(:B), fs.relative_payoff_against(:C)
-  pp fs.next_state(:c,:d,:d).to_a
+  require 'minitest/autorun'
+
+  class StateTest < Minitest::Test
+
+    def test_alld
+      fs = FullState.make_from_id(63)
+      assert_equal [:d,:d,:d,:d,:d,:d], fs.to_a
+      assert_equal [:d,:d,2,2], fs.to_ss
+      assert_equal 0, fs.relative_payoff_against(:B)
+      assert_equal 0, fs.relative_payoff_against(:C)
+    end
+
+    def test_allc
+      fs = FullState.make_from_id(0)
+      assert_equal [:c,:c,:c,:c,:c,:c], fs.to_a
+      assert_equal [:c,:c,0,0], fs.to_ss
+      assert_equal 0, fs.relative_payoff_against(:B)
+      assert_equal 0, fs.relative_payoff_against(:C)
+    end
+
+    def test_state43
+      fs = FullState.make_from_id(43)
+      assert_equal [:d, :c, :d, :c, :d, :d], fs.to_a
+      assert_equal [:d,:c,2,1], fs.to_ss
+      assert_equal 0, fs.relative_payoff_against(:B)
+      assert_equal -1, fs.relative_payoff_against(:C)
+      assert_equal [:c,:c,:c,:d,:d,:d], fs.next_state(:c,:d,:d).to_a
+    end
+
+    def test_state
+      fs = FullState.make_from_id(44)
+      assert_equal [:d, :c, :d, :d, :c, :c], fs.to_a
+      assert_equal [:d,:c,1,-1], fs.to_ss
+      assert_equal -1, fs.relative_payoff_against(:B)
+      assert_equal 0, fs.relative_payoff_against(:C)
+      assert_equal [:c,:d,:d,:d,:c,:d], fs.next_state(:d,:d,:d).to_a
+    end
+  end
 end
 
