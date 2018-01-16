@@ -300,6 +300,59 @@ if __FILE__ == $0
       m3_stra.modify_action('ddddddddd', :c)
       assert_equal :c, m3_stra.action(511)
     end
+
+    def test_SS
+      # the most generous successful strategy
+      bits = "cdcdcdcdddcdddddcccdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdcccdccddcccccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcccdcdcddcddccddddddddcdcccdccddcdcdcdcddcdcdcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddccddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd"
+      stra = StrategyM3.make_from_bits(bits)
+
+      assert_equal :c, stra.action(0)
+      assert_equal :d, stra.action(511)
+    end
+
+    def test_error_path
+      bits = "c"*512
+      stra = StrategyM3.make_from_bits(bits)
+
+      assert_equal [['ccc-ccc-ccc','ccc-ccc-ccc']], stra.error_paths(0).map{|path| path.map(&:to_s)}
+
+      paths = stra.error_paths(1).map{|path| path.map(&:to_s)}
+      path1 = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path2 = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path3 = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      assert_equal [path1,path2,path3], paths
+
+      paths = stra.error_paths(2).map{|path| path.map(&:to_s)}
+      path_ab = ['ccc-ccc-ccc','ccd-ccd-ccc','cdc-cdc-ccc','dcc-dcc-ccc','ccc-ccc-ccc']
+      path_ac = ['ccc-ccc-ccc','ccd-ccc-ccd','cdc-ccc-cdc','dcc-ccc-dcc','ccc-ccc-ccc']
+      path_bc = ['ccc-ccc-ccc','ccc-ccd-ccd','ccc-cdc-cdc','ccc-dcc-dcc','ccc-ccc-ccc']
+
+      path_a_a = ['ccc-ccc-ccc','ccd-ccc-ccc','cdd-ccc-ccc','ddc-ccc-ccc','dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_a_b = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccd-ccc','dcc-cdc-ccc','ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_a_c = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccd','dcc-ccc-cdc','ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_b_a = ['ccc-ccc-ccc','ccc-ccd-ccc','ccd-cdc-ccc','cdc-dcc-ccc','dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_b_b = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdd-ccc','ccc-ddc-ccc','ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_b_c = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccd','ccc-dcc-cdc','ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_c_a = ['ccc-ccc-ccc','ccc-ccc-ccd','ccd-ccc-cdc','cdc-ccc-dcc','dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_c_b = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccd-cdc','ccc-cdc-dcc','ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_c_c = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdd','ccc-ccc-ddc','ccc-ccc-dcc', 'ccc-ccc-ccc']
+
+      path_a__a = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcd-ccc-ccc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_a__b = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccd-ccc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_a__c = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_b__a = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccd-dcc-ccc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_b__b = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcd-ccc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_b__c = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_c__a = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccd-ccc-dcc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
+      path_c__b = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccd-dcc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
+      path_c__c = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
+
+      expected = [path_ab,path_ac,path_bc,
+                  path_a_a,path_a_b,path_a_c,path_b_a,path_b_b,path_b_c,path_c_a,path_c_b,path_c_c,
+                  path_a__a,path_a__b,path_a__c,path_b__a,path_b__b,path_b__c,path_c__a,path_c__b,path_c__c
+      ]
+      assert_equal expected, paths
+    end
   end
 
 end
