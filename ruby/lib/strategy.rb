@@ -220,8 +220,8 @@ if __FILE__ == $0
       assert_equal :d, strategy.action([:d,:d,2,2] )
 
       s = FullState.new(:c,:c,:d,:c,:c,:d)
-      nexts = strategy.possible_next_full_states(s)
-      expected = [[:c,:d,:c,:c,:d,:c], [:c,:d,:c,:c,:d,:d], [:c,:d,:c,:d,:d,:c], [:c,:d,:c,:d,:d,:d]].map {|arg| FullState.new(*arg)}
+      nexts = strategy.possible_next_full_states(s).map(&:to_s)
+      expected = ['cdccdc', 'cdccdd', 'cdcddc', 'cdcddd']
       assert_equal expected, nexts
 
       next_state = strategy.next_full_state_with_self(s)
@@ -238,8 +238,8 @@ if __FILE__ == $0
       assert_equal :c, strategy.action([:d,:d,2,2] )
 
       s = FullState.new(:c,:c,:d,:c,:c,:d)
-      nexts = strategy.possible_next_full_states(s)
-      expected = [[:c,:c,:c,:c,:d,:c], [:c,:c,:c,:c,:d,:d], [:c,:c,:c,:d,:d,:c], [:c,:c,:c,:d,:d,:d]].map {|arg| FullState.new(*arg)}
+      nexts = strategy.possible_next_full_states(s).map(&:to_s)
+      expected = ['ccccdc', 'ccccdd', 'cccddc', 'cccddd']
       assert_equal expected, nexts
 
       next_state = strategy.next_full_state_with_self(s)
@@ -257,17 +257,37 @@ if __FILE__ == $0
 
       s = FullState.new(:c,:c,:d,:c,:c,:d)
       sid = State.index(s.to_ss)
-      move_a = bits[sid].to_sym  #=> d
+      move_a = strategy.action([:c,:c,1,1])  #=> d
       nexts = strategy.possible_next_full_states(s).map(&:to_s)
       expected = ['cdccdc', 'cdccdd', 'cdcddc', 'cdcddd']
       assert_equal expected, nexts
 
       next_state = strategy.next_full_state_with_self(s)
-      move_b = bits[State.index([:d,:c,0,1])]
-      move_c = bits[State.index([:c,:d,1,0])]
+      move_b = strategy.action([:d,:c,0,1])
+      move_c = strategy.action([:c,:d,1,0])
       assert_equal "c#{move_a}c#{move_b}d#{move_c}", next_state.to_s
 
       assert_equal false, strategy.defensible?
+    end
+
+    def test_most_generous_PS2
+      bits = "cddcdddcddcccdcddddddcccdddcccccddcddddd"
+      strategy = Strategy.make_from_bits(bits)
+      assert_equal bits, strategy.to_bits
+      assert_equal :c, strategy.action([:c,:c,0,0] )
+      assert_equal :d, strategy.action([:d,:d,2,2] )
+
+      s = FullState.new(:c,:c,:d,:c,:c,:d)
+      move_a = strategy.action([:c,:c,1,1]) #=> d
+      nexts = strategy.possible_next_full_states(s).map(&:to_s)
+      expected = ['cdccdc', 'cdccdd', 'cdcddc', 'cdcddd']
+      assert_equal expected, nexts
+
+      next_state = strategy.next_full_state_with_self(s)
+      move_b = strategy.action([:d,:c,0,1])
+      move_c = strategy.action([:c,:d,1,0])
+      assert_equal "c#{move_a}c#{move_b}d#{move_c}", next_state.to_s
+      assert_equal true, strategy.defensible?
     end
 
   end
