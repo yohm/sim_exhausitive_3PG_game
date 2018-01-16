@@ -142,6 +142,7 @@ EOS
     return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
 
     FullStateM3::NUM_STATES.times do |t|
+      # $stderr.puts "step: #{t}/#{FullStateM3::NUM_STATES}"
       a_b.update( a1_b )
       a_c.update( a1_c )
       return false if( a_b.has_negative_diagonal? or a_c.has_negative_diagonal? )
@@ -246,18 +247,60 @@ EOS
 end
 
 if __FILE__ == $0
-  def test
-    bits = "cddd" * 128
-    strategy = StrategyM3.make_from_bits(bits)
-    strategy.show_actions($stdout)
-    pp strategy.valid?, strategy.defensible?
-    raise "inconsistent bits" unless bits == strategy.to_bits
+  require 'minitest/autorun'
 
-    bits = "cddcddccddcdddcdddddddccdddcccccdddddddd"
-    m2_stra = Strategy.make_from_bits(bits)
-    m3_stra = StrategyM3.make_from_m2_strategy(m2_stra)
+  class StrategyM3Test < Minitest::Test
+
+    def test_allD
+      bits = "d"*512
+      stra = StrategyM3.make_from_bits(bits)
+      assert_equal bits, stra.to_bits
+      assert_equal :d, stra.action(0)
+      assert_equal :d, stra.action(511)
+      assert_equal true, stra.valid?
+
+      s = FullStateM3.new(:d,:c,:c,:c,:c,:d,:d,:d,:c)
+      nexts = stra.possible_next_full_states(s).map(&:to_s)
+      expected = ['ccd-cdc-dcc', 'ccd-cdc-dcd', 'ccd-cdd-dcc', 'ccd-cdd-dcd']
+      assert_equal expected, nexts
+
+      next_state = stra.next_full_state_with_self(s)
+      assert_equal 'ccd-cdd-dcd', next_state.to_s
+
+      # assert_equal true, stra.defensible?  # it takes too long time
+    end
+
+    def test_allC
+      bits = "c"*512
+      stra = StrategyM3.make_from_bits(bits)
+      assert_equal bits, stra.to_bits
+      assert_equal :c, stra.action(0)
+      assert_equal :c, stra.action(511)
+      assert_equal true, stra.valid?
+
+      s = FullStateM3.new(:d,:c,:c,:c,:c,:d,:d,:d,:c)
+      nexts = stra.possible_next_full_states(s).map(&:to_s)
+      expected = ['ccc-cdc-dcc', 'ccc-cdc-dcd', 'ccc-cdd-dcc', 'ccc-cdd-dcd']
+      assert_equal expected, nexts
+
+      next_state = stra.next_full_state_with_self(s)
+      assert_equal 'ccc-cdc-dcc', next_state.to_s
+
+      assert_equal false, stra.defensible?
+    end
+
+    def test_make_from_m2_strategy
+      bits = "cddcdddcddcccdcddddddcccdddcccccddcddddd"
+      m2_stra = Strategy.make_from_bits(bits)
+      m3_stra = StrategyM3.make_from_m2_strategy(m2_stra)
+
+      assert_equal :c, m3_stra.action(0)
+      assert_equal :d, m3_stra.action(511)
+
+      m3_stra.modify_action('ddddddddd', :c)
+      assert_equal :c, m3_stra.action(511)
+    end
   end
 
-  test
 end
 
