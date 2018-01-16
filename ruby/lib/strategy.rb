@@ -208,6 +208,72 @@ class Strategy
 end
 
 if __FILE__ == $0
+  require 'minitest/autorun'
+
+  class StrategyTest < Minitest::Test
+
+    def test_allD
+      bits = "d"*40
+      strategy = Strategy.make_from_bits(bits)
+      assert_equal bits, strategy.to_bits
+      assert_equal :d, strategy.action([:c,:c,0,0] )
+      assert_equal :d, strategy.action([:d,:d,2,2] )
+
+      s = FullState.new(:c,:c,:d,:c,:c,:d)
+      nexts = strategy.possible_next_full_states(s)
+      expected = [[:c,:d,:c,:c,:d,:c], [:c,:d,:c,:c,:d,:d], [:c,:d,:c,:d,:d,:c], [:c,:d,:c,:d,:d,:d]].map {|arg| FullState.new(*arg)}
+      assert_equal expected, nexts
+
+      next_state = strategy.next_full_state_with_self(s)
+      assert_equal 'cdcddd', next_state.to_s
+
+      assert_equal true, strategy.defensible?
+    end
+
+    def test_allC
+      bits = "c"*40
+      strategy = Strategy.make_from_bits(bits)
+      assert_equal bits, strategy.to_bits
+      assert_equal :c, strategy.action([:c,:c,0,0] )
+      assert_equal :c, strategy.action([:d,:d,2,2] )
+
+      s = FullState.new(:c,:c,:d,:c,:c,:d)
+      nexts = strategy.possible_next_full_states(s)
+      expected = [[:c,:c,:c,:c,:d,:c], [:c,:c,:c,:c,:d,:d], [:c,:c,:c,:d,:d,:c], [:c,:c,:c,:d,:d,:d]].map {|arg| FullState.new(*arg)}
+      assert_equal expected, nexts
+
+      next_state = strategy.next_full_state_with_self(s)
+      assert_equal 'ccccdc', next_state.to_s
+
+      assert_equal false, strategy.defensible?
+    end
+
+    def test_a_strategy
+      bits = "ccccdddcdddccccddcdddccccddcddcccccddddd"
+      strategy = Strategy.make_from_bits(bits)
+      assert_equal bits, strategy.to_bits
+      assert_equal :c, strategy.action([:c,:c,0,0] )
+      assert_equal :d, strategy.action([:d,:d,2,2] )
+
+      s = FullState.new(:c,:c,:d,:c,:c,:d)
+      sid = State.index(s.to_ss)
+      move_a = bits[sid].to_sym  #=> d
+      nexts = strategy.possible_next_full_states(s).map(&:to_s)
+      expected = ['cdccdc', 'cdccdd', 'cdcddc', 'cdcddd']
+      assert_equal expected, nexts
+
+      next_state = strategy.next_full_state_with_self(s)
+      move_b = bits[State.index([:d,:c,0,1])]
+      move_c = bits[State.index([:c,:d,1,0])]
+      assert_equal "c#{move_a}c#{move_b}d#{move_c}", next_state.to_s
+
+      assert_equal false, strategy.defensible?
+    end
+
+  end
+end
+
+if __FILE__ == $0
   if ARGV.size == 1
     bits = ARGV[0]
     stra = Strategy.make_from_bits(bits)
@@ -221,12 +287,6 @@ if __FILE__ == $0
     #a1_b.update(a1_b)
     #pp a1_b
     #pp "def: #{stra.defensible?}"
-    exit 0
   end
-  bits = "ccccdddcdddccccddcdddccccddcddcccccddddd"
-  strategy = Strategy.make_from_bits(bits)
-  p strategy
-  raise "inconsistent bits" unless bits == strategy.to_bits
-  p strategy.valid?
 end
 

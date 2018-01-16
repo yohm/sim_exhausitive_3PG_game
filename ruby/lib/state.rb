@@ -68,6 +68,10 @@ class FullState
     to_a.join('')
   end
 
+  def ==(other)
+    self.to_id == other.to_id
+  end
+
   def to_id
     id = 0
     id += 32 if @a_2 == :d
@@ -171,6 +175,13 @@ if __FILE__ == $0
       assert_equal -1, fs.relative_payoff_against(:B)
       assert_equal 0, fs.relative_payoff_against(:C)
       assert_equal [:c,:d,:d,:d,:c,:d], fs.next_state(:d,:d,:d).to_a
+    end
+
+    def test_equality
+      fs1 = FullState.make_from_id(15)
+      fs2 = FullState.new(:c,:c,:d,:d,:d,:d)
+      assert_equal true, fs1 == fs2
+
     end
   end
 end

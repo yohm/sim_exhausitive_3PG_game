@@ -54,6 +54,10 @@ class FullStateM3
     nums.inject(:+)
   end
 
+  def ==(other)
+    self.to_id == other.to_id
+  end
+
   def to_m2_states
     fs1 = FullState.new(@a_3,@a_2,@b_3,@b_2,@c_3,@c_2)
     fs2 = FullState.new(@a_2,@a_1,@b_2,@b_1,@c_2,@c_1)
@@ -122,6 +126,12 @@ if __FILE__ == $0
       assert_equal -1, fs.relative_payoff_against(:C)
       assert_equal ['dccdcc','ccdccd'], fs.to_m2_states.map(&:to_s)
       assert_equal 'ccc-dcd-cdd', fs.next_state(:c,:d,:d).to_s
+    end
+
+    def test_equality
+      fs1 = FullStateM3.make_from_id(273)
+      fs2 = FullStateM3.new(:d,:c,:c,:c,:d,:c,:c,:c,:d)
+      assert_equal true, fs1==fs2
     end
   end
 end
