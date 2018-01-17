@@ -349,41 +349,41 @@ if __FILE__ == $0
 
       path = stra.recovery_path_nodes(1)
       path_a = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path_b = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_c = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_b = swap_players(path_a,0,1)
+      path_c = swap_players(path_a,0,2)
       assert_equal (path_a+path_b+path_c).uniq.sort, path.map(&:to_s).sort
 
       path = stra.recovery_path_nodes(2)
       path_ab = ['ccd-ccd-ccc','cdc-cdc-ccc','dcc-dcc-ccc','ccc-ccc-ccc']
-      path_ac = ['ccd-ccc-ccd','cdc-ccc-cdc','dcc-ccc-dcc','ccc-ccc-ccc']
-      path_bc = ['ccc-ccd-ccd','ccc-cdc-cdc','ccc-dcc-dcc','ccc-ccc-ccc']
+      path_ac = swap_players(path_ab,1,2)
+      path_bc = swap_players(path_ab,0,2)
 
       path_a_a = ['ccd-ccc-ccc','cdd-ccc-ccc','ddc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
       path_a_b = ['ccd-ccc-ccc','cdc-ccd-ccc','dcc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_a_c = ['ccd-ccc-ccc','cdc-ccc-ccd','dcc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
-      path_b_a = ['ccc-ccd-ccc','ccd-cdc-ccc','cdc-dcc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path_b_b = ['ccc-ccd-ccc','ccc-cdd-ccc','ccc-ddc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_b_c = ['ccc-ccd-ccc','ccc-cdc-ccd','ccc-dcc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
-      path_c_a = ['ccc-ccc-ccd','ccd-ccc-cdc','cdc-ccc-dcc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path_c_b = ['ccc-ccc-ccd','ccc-ccd-cdc','ccc-cdc-dcc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_c_c = ['ccc-ccc-ccd','ccc-ccc-cdd','ccc-ccc-ddc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_a_c = swap_players(path_a_b,1,2)
+      path_b_a = swap_players(path_a_b,0,1)
+      path_b_b = swap_players(path_a_a,0,1)
+      path_b_c = swap_players(path_b_a,0,2)
+      path_c_a = swap_players(path_a_c,0,2)
+      path_c_b = swap_players(path_c_a,0,1)
+      path_c_c = swap_players(path_a_a,0,2)
 
       path_a__a = ['ccd-ccc-ccc','cdc-ccc-ccc','dcd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
       path_a__b = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_a__c = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
-      path_b__a = ['ccc-ccd-ccc','ccc-cdc-ccc','ccd-dcc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path_b__b = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_b__c = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
-      path_c__a = ['ccc-ccc-ccd','ccc-ccc-cdc','ccd-ccc-dcc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path_c__b = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccd-dcc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path_c__c = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_a__c = swap_players(path_a__b,1,2)
+      path_b__a = swap_players(path_a__b,0,1)
+      path_b__b = swap_players(path_a__a,0,1)
+      path_b__c = swap_players(path_b__a,0,2)
+      path_c__a = swap_players(path_b__a,1,2)
+      path_c__b = swap_players(path_c__a,0,1)
+      path_c__c = swap_players(path_a__a,0,2)
 
       all = path_ab+path_ac+path_bc+path_a_a+path_a_b+path_a_c+path_b_a+path_b_b+path_b_c+
           path_c_a+path_c_b+path_c_c+path_a__a+path_a__b+path_a__c+path_b__a+path_b__b+path_b__c+path_c__a+path_c__b+path_c__c
       assert_equal all.uniq.sort, path.map(&:to_s).sort
     end
 
-    def swap_players(states, player1 = 0, player2 = 1)
+    def swap_players(states, p1 = 0, p2 = 1)
       states.map {|state|
         splitted = state.split('-')
         splitted[p1], splitted[p2] = splitted[p2], splitted[p1]
