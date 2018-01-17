@@ -150,6 +150,37 @@ EOS
     true
   end
 
+  def trace_state_until_cycle(s)
+    trace = [s]
+    loop do
+      n = next_full_state_with_self(trace.last)
+      if trace.include?(n)
+        trace << n
+        break
+      else
+        trace << n
+      end
+    end
+    trace
+  end
+
+  def recovery_path_nodes(num_errors)
+    if num_errors == 0
+      raise "full cooperation is not a terminal state" if action(0) == :d
+      return [FullStateM3.make_from_id(0)]
+    else
+      states = recovery_path_nodes(num_errors-1)
+      return false unless states
+      neighbors = states.map {|s| s.neighbor_states }.flatten.uniq {|s| s.to_id}
+      traces = neighbors.map do |n|
+        trace = trace_state_until_cycle(n)
+        return false if trace.last.to_id != 0   # => failed to recover full cooperation
+        trace
+      end
+      (neighbors + traces.flatten).uniq {|s| s.to_id} # nodes which is necessary to recover from errors
+    end
+  end
+
   def make_successful
     # noise on B&C (state 0->5)
     modify_action('ccdccdccc',:c) # (5->26)
@@ -310,49 +341,56 @@ if __FILE__ == $0
       assert_equal :d, stra.action(511)
     end
 
-    def test_error_path
+    def test_recovery_allC
       bits = "c"*512
       stra = StrategyM3.make_from_bits(bits)
 
-      assert_equal [['ccc-ccc-ccc','ccc-ccc-ccc']], stra.error_paths(0).map{|path| path.map(&:to_s)}
+      assert_equal ['ccc-ccc-ccc'], stra.recovery_path_nodes(0).map(&:to_s)
 
-      paths = stra.error_paths(1).map{|path| path.map(&:to_s)}
-      path1 = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
-      path2 = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
-      path3 = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
-      assert_equal [path1,path2,path3], paths
+      path = stra.recovery_path_nodes(1)
+      path_a = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_b = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_c = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      assert_equal (path_a+path_b+path_c).uniq.sort, path.map(&:to_s).sort
 
-      paths = stra.error_paths(2).map{|path| path.map(&:to_s)}
-      path_ab = ['ccc-ccc-ccc','ccd-ccd-ccc','cdc-cdc-ccc','dcc-dcc-ccc','ccc-ccc-ccc']
-      path_ac = ['ccc-ccc-ccc','ccd-ccc-ccd','cdc-ccc-cdc','dcc-ccc-dcc','ccc-ccc-ccc']
-      path_bc = ['ccc-ccc-ccc','ccc-ccd-ccd','ccc-cdc-cdc','ccc-dcc-dcc','ccc-ccc-ccc']
+      path = stra.recovery_path_nodes(2)
+      path_ab = ['ccd-ccd-ccc','cdc-cdc-ccc','dcc-dcc-ccc','ccc-ccc-ccc']
+      path_ac = ['ccd-ccc-ccd','cdc-ccc-cdc','dcc-ccc-dcc','ccc-ccc-ccc']
+      path_bc = ['ccc-ccd-ccd','ccc-cdc-cdc','ccc-dcc-dcc','ccc-ccc-ccc']
 
-      path_a_a = ['ccc-ccc-ccc','ccd-ccc-ccc','cdd-ccc-ccc','ddc-ccc-ccc','dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_a_b = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccd-ccc','dcc-cdc-ccc','ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_a_c = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccd','dcc-ccc-cdc','ccc-ccc-dcc', 'ccc-ccc-ccc']
-      path_b_a = ['ccc-ccc-ccc','ccc-ccd-ccc','ccd-cdc-ccc','cdc-dcc-ccc','dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_b_b = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdd-ccc','ccc-ddc-ccc','ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_b_c = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccd','ccc-dcc-cdc','ccc-ccc-dcc', 'ccc-ccc-ccc']
-      path_c_a = ['ccc-ccc-ccc','ccc-ccc-ccd','ccd-ccc-cdc','cdc-ccc-dcc','dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_c_b = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccd-cdc','ccc-cdc-dcc','ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_c_c = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdd','ccc-ccc-ddc','ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_a_a = ['ccd-ccc-ccc','cdd-ccc-ccc','ddc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_a_b = ['ccd-ccc-ccc','cdc-ccd-ccc','dcc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_a_c = ['ccd-ccc-ccc','cdc-ccc-ccd','dcc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_b_a = ['ccc-ccd-ccc','ccd-cdc-ccc','cdc-dcc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_b_b = ['ccc-ccd-ccc','ccc-cdd-ccc','ccc-ddc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_b_c = ['ccc-ccd-ccc','ccc-cdc-ccd','ccc-dcc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_c_a = ['ccc-ccc-ccd','ccd-ccc-cdc','cdc-ccc-dcc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_c_b = ['ccc-ccc-ccd','ccc-ccd-cdc','ccc-cdc-dcc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_c_c = ['ccc-ccc-ccd','ccc-ccc-cdd','ccc-ccc-ddc','ccc-ccc-dcc','ccc-ccc-ccc']
 
-      path_a__a = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcd-ccc-ccc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_a__b = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccd-ccc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_a__c = ['ccc-ccc-ccc','ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
-      path_b__a = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccd-dcc-ccc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_b__b = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcd-ccc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_b__c = ['ccc-ccc-ccc','ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
-      path_c__a = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccd-ccc-dcc','cdc-ccc-ccc', 'dcc-ccc-ccc', 'ccc-ccc-ccc']
-      path_c__b = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccd-dcc','ccc-cdc-ccc', 'ccc-dcc-ccc', 'ccc-ccc-ccc']
-      path_c__c = ['ccc-ccc-ccc','ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcd','ccc-ccc-cdc', 'ccc-ccc-dcc', 'ccc-ccc-ccc']
+      path_a__a = ['ccd-ccc-ccc','cdc-ccc-ccc','dcd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_a__b = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_a__c = ['ccd-ccc-ccc','cdc-ccc-ccc','dcc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_b__a = ['ccc-ccd-ccc','ccc-cdc-ccc','ccd-dcc-ccc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_b__b = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcd-ccc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_b__c = ['ccc-ccd-ccc','ccc-cdc-ccc','ccc-dcc-ccd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
+      path_c__a = ['ccc-ccc-ccd','ccc-ccc-cdc','ccd-ccc-dcc','cdc-ccc-ccc','dcc-ccc-ccc','ccc-ccc-ccc']
+      path_c__b = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccd-dcc','ccc-cdc-ccc','ccc-dcc-ccc','ccc-ccc-ccc']
+      path_c__c = ['ccc-ccc-ccd','ccc-ccc-cdc','ccc-ccc-dcd','ccc-ccc-cdc','ccc-ccc-dcc','ccc-ccc-ccc']
 
-      expected = [path_ab,path_ac,path_bc,
-                  path_a_a,path_a_b,path_a_c,path_b_a,path_b_b,path_b_c,path_c_a,path_c_b,path_c_c,
-                  path_a__a,path_a__b,path_a__c,path_b__a,path_b__b,path_b__c,path_c__a,path_c__b,path_c__c
-      ]
-      assert_equal expected, paths
+      all = path_ab+path_ac+path_bc+path_a_a+path_a_b+path_a_c+path_b_a+path_b_b+path_b_c+
+          path_c_a+path_c_b+path_c_c+path_a__a+path_a__b+path_a__c+path_b__a+path_b__b+path_b__c+path_c__a+path_c__b+path_c__c
+      assert_equal all.uniq.sort, path.map(&:to_s).sort
     end
+
+    def swap_players(states, player1 = 0, player2 = 1)
+      states.map {|state|
+        splitted = state.split('-')
+        splitted[p1], splitted[p2] = splitted[p2], splitted[p1]
+        splitted.join('-')
+      }
+    end
+
   end
 
 end

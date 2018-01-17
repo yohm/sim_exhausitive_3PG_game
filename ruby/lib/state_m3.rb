@@ -68,6 +68,16 @@ class FullStateM3
     self.class.new(@a_2,@a_1,act_a,@b_2,@b_1,act_b,@c_2,@c_1,act_c)
   end
 
+  def neighbor_states
+    act_a = (@a_1 == :c ? :d : :c)
+    act_b = (@b_1 == :c ? :d : :c)
+    act_c = (@c_1 == :c ? :d : :c)
+    flip_a = self.class.new(@a_3,@a_2,act_a,@b_3,@b_2,@b_1,@c_3,@c_2,@c_1)
+    flip_b = self.class.new(@a_3,@a_2,@a_1,@b_3,@b_2,act_b,@c_3,@c_2,@c_1)
+    flip_c = self.class.new(@a_3,@a_2,@a_1,@b_3,@b_2,@b_1,@c_3,@c_2,act_c)
+    [flip_a,flip_b,flip_c]
+  end
+
   def relative_payoff_against(other)
     if other == :B
       act = @b_1
@@ -132,6 +142,12 @@ if __FILE__ == $0
       fs1 = FullStateM3.make_from_id(273)
       fs2 = FullStateM3.new(:d,:c,:c,:c,:d,:c,:c,:c,:d)
       assert_equal true, fs1==fs2
+    end
+
+    def test_neighbor_states
+      fs = FullStateM3.make_from_id(511)
+      neighbors = fs.neighbor_states.map(&:to_s).sort
+      assert_equal ['ddc-ddd-ddd','ddd-ddc-ddd','ddd-ddd-ddc'], neighbors
     end
   end
 end
