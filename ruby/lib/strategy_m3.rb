@@ -454,9 +454,9 @@ if __FILE__ == $0
           path_ab+path_ac+path_bc+path_a_a+path_a_b+path_a_c+path_b_a+path_b_b+path_b_c+
           path_c_a+path_c_b+path_c_c+path_a__a+path_a__b+path_a__c+path_b__a+path_b__b+path_b__c+path_c__a+path_c__b+path_c__c+
           path_a___a+path_a___b+path_a___c+path_b___a+path_b___b+path_b___c+path_c___a+path_c___b+path_c___c).uniq
-      assert_equal [], (path.map(&:to_s)-all).sort
-      assert_equal [], (all-path.map(&:to_s)).sort
       assert_equal all.uniq.sort, path.map(&:to_s).uniq.sort
+
+      assert_equal false, stra.recovery_path_nodes(3)
     end
 
     def swap_players(states, p1 = 0, p2 = 1)
