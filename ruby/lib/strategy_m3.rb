@@ -282,6 +282,9 @@ if __FILE__ == $0
 
   class StrategyM3Test < Minitest::Test
 
+    PS2_bits = "cdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd".freeze
+    SS_bits = "cdcdcdcdddcdddddcccdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdcccdccddcccccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcccdcdcddcddccddddddddcdcccdccddcdcdcdcddcdcdcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddccddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd".freeze
+
     def test_allD
       bits = "d"*512
       stra = StrategyM3.make_from_bits(bits)
@@ -334,8 +337,7 @@ if __FILE__ == $0
 
     def test_SS
       # the most generous successful strategy
-      bits = "cdcdcdcdddcdddddcccdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdcccdccddcccccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcccdcdcddcddccddddddddcdcccdccddcdcdcdcddcdcdcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddccddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd"
-      stra = StrategyM3.make_from_bits(bits)
+      stra = StrategyM3.make_from_bits(SS_bits)
 
       assert_equal :c, stra.action(0)
       assert_equal :d, stra.action(511)
@@ -385,8 +387,7 @@ if __FILE__ == $0
 
     def test_recovery_PS2
       # most generous version of PS2 extended to m=3
-      bits = "cdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd"
-      stra = StrategyM3.make_from_bits(bits)
+      stra = StrategyM3.make_from_bits(PS2_bits)
 
       assert_equal ['ccc-ccc-ccc'], stra.recovery_path_nodes(0).map(&:to_s)
 
@@ -401,8 +402,7 @@ if __FILE__ == $0
 
     def test_recovery_SS
       # most generous successful m=3 strategy
-      bits = "cdcdcdcdddcdddddcccdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddcdddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdcccdccddcccccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcccdcdcddcddccddddddddcdcccdccddcdcdcdcddcdcdcddddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddcdcdcdcdddddddddccddccddcccdcccddccddcddddddddddccddccddcccdcccddcdddcdddddddddddccddccdccddccddcdcccdccddccddccdccddccdccddccddcdcccdccddccddccccddccddcdcdcdcddcdddcddddddddddccddccddcdcdcdcddcdddcdddddddddd"
-      stra = StrategyM3.make_from_bits(bits)
+      stra = StrategyM3.make_from_bits(SS_bits)
 
       assert_equal ['ccc-ccc-ccc'], stra.recovery_path_nodes(0).map(&:to_s)
       path = stra.recovery_path_nodes(1)
@@ -465,6 +465,19 @@ if __FILE__ == $0
         splitted[p1], splitted[p2] = splitted[p2], splitted[p1]
         splitted.join('-')
       }
+    end
+
+    def test_trace_states
+      # transition to fully cooperative state from defective state by two-bit error
+      s = FullStateM3.make_from_bits("ddcddcddd")
+
+      stra = StrategyM3.make_from_bits(PS2_bits)
+      trace = stra.trace_state_until_cycle(s)
+      assert_equal 'ccc-ccc-ccc', trace.last.to_s
+
+      stra = StrategyM3.make_from_bits(SS_bits)
+      trace = stra.trace_state_until_cycle(s)
+      assert_equal 'ccc-ccc-ccc', trace.last.to_s
     end
 
   end
