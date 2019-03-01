@@ -48,7 +48,7 @@ MPI execution is not necessary since the number of strategy is not so large.
 
 Then, we filter out strategies using the efficiency condition.
 
-# Step 4
+## Step 4
 
 To convert m=2 strategies into m=3 strategies and make them successful, run the following script.
 
@@ -72,7 +72,7 @@ mpiexec -n 8 main_m3_efficiency 0.001 m3_defensible%02d m3_defensible_efficiency
 cat m3_defensible_efficiency_* > m3_defensible_efficiency
 ```
 
-# Step 5
+## (optional) Step 5
 
 To calculate the second largest eigenvalues for the successful strategies,
 
@@ -82,4 +82,3 @@ cat -n second_eigs.txt | sort --key=2 -n > second_eigs_sorted.txt
 ```
 
 You'll find the second eigenvalues sorted by the size.
-
