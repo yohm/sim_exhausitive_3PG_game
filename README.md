@@ -1,5 +1,8 @@
 # exhaustive enumeration of successful strategies for three-person public goods game
 
+Source code for the following study.  
+[Y. Murase and S.K. Baek, "Seven rules to avoid the tragedy of the commons", J.Theor.Biol. (2018)](https://www.sciencedirect.com/science/article/pii/S0022519318301954)
+
 ## Step 1
 
 The first step is defensibility against allD.
